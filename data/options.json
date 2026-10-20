@@ -1,0 +1,493 @@
+{
+  "version": 1,
+  "taskTypes": [
+    {
+      "id": "implement",
+      "label": "Implement a feature",
+      "icon": "✨",
+      "instruction": "Design and implement the requested functionality end-to-end.",
+      "placeholder": "e.g. Add a password-reset flow: user requests a reset by email, receives a single-use link valid for 30 minutes, and sets a new password. Must integrate with our existing UserService.",
+      "checklist": [
+        "Goal / user story",
+        "Inputs and outputs",
+        "Business rules",
+        "Where it fits in the existing code",
+        "Edge cases",
+        "Out of scope"
+      ]
+    },
+    {
+      "id": "review",
+      "label": "Code / design review",
+      "icon": "🔍",
+      "instruction": "Review the provided material critically. Identify issues, rank them by severity, and propose concrete fixes.",
+      "placeholder": "Paste the code, PR diff or design to review, then say what kind of feedback you want (correctness, security, readability…).",
+      "checklist": [
+        "Code or design to review",
+        "What it is supposed to do",
+        "Areas of concern",
+        "Standards to review against",
+        "Severity levels you care about"
+      ]
+    },
+    {
+      "id": "debug",
+      "label": "Debug an issue",
+      "icon": "🐞",
+      "instruction": "Diagnose the root cause of the problem described. Form hypotheses, explain how to verify each, then propose a fix.",
+      "placeholder": "e.g. POST /orders returns 500 intermittently under load.\nError: TypeError: Cannot read properties of undefined (reading \"id\") at OrderService.create (order.service.ts:42)\nExpected: 201 with the order. Actual: 500 roughly 1 in 50 requests.",
+      "checklist": [
+        "Error message / stack trace",
+        "Steps to reproduce",
+        "Expected behaviour",
+        "Actual behaviour",
+        "Environment & versions",
+        "What you have already tried",
+        "Relevant code"
+      ]
+    },
+    {
+      "id": "refactor",
+      "label": "Refactor",
+      "icon": "♻️",
+      "instruction": "Refactor the provided code to improve readability, structure and maintainability without changing its external behaviour.",
+      "placeholder": "Paste the code to refactor and explain what bothers you about it (long functions, duplication, hard to test…).",
+      "checklist": [
+        "Code to refactor",
+        "Problems with the current code",
+        "Goals of the refactor",
+        "Behaviour that must not change",
+        "Constraints (public API, performance)"
+      ]
+    },
+    {
+      "id": "design",
+      "label": "System / solution design",
+      "icon": "📐",
+      "instruction": "Produce a solution design covering components, responsibilities, data flow, interfaces and key trade-offs.",
+      "placeholder": "e.g. Design a notification service that sends email, SMS and push to 2M users per day, with user preferences, retries and delivery tracking.",
+      "checklist": [
+        "Problem & goals",
+        "Functional requirements",
+        "Scale (users, RPS, data volume)",
+        "Non-functional requirements (latency, availability)",
+        "Existing systems to integrate with",
+        "Constraints (budget, team, deadlines)"
+      ]
+    },
+    {
+      "id": "api-design",
+      "label": "API design",
+      "icon": "🔌",
+      "instruction": "Design a clean, consistent, versionable API including endpoints/operations, request and response shapes, errors and auth.",
+      "placeholder": "e.g. Design a REST API for managing subscriptions: create, upgrade/downgrade plans, cancel, and list invoices. Consumers are our web app and partners.",
+      "checklist": [
+        "Resources / entities",
+        "Operations needed",
+        "Consumers of the API",
+        "Auth model",
+        "Versioning & compatibility needs",
+        "Pagination, filtering, error format"
+      ]
+    },
+    {
+      "id": "optimize",
+      "label": "Optimise performance",
+      "icon": "⚡",
+      "instruction": "Identify performance bottlenecks, explain their impact, and propose measurable optimisations in priority order.",
+      "placeholder": "e.g. The /reports endpoint takes 4–6 s at p95. It runs 3 SQL queries over a 20M-row table. Target: under 500 ms.",
+      "checklist": [
+        "What is slow",
+        "Current measurements",
+        "Target metrics",
+        "Profiling data or query plans",
+        "Relevant code / queries",
+        "Constraints"
+      ]
+    },
+    {
+      "id": "test",
+      "label": "Write tests",
+      "icon": "✅",
+      "instruction": "Write a thorough, maintainable test suite covering the happy path, edge cases and failure modes.",
+      "placeholder": "Paste the code under test and say which framework to use and what level of tests you want (unit, integration, E2E).",
+      "checklist": [
+        "Code under test",
+        "Test framework",
+        "Test level (unit / integration / E2E)",
+        "Key scenarios & edge cases",
+        "What to mock"
+      ]
+    },
+    {
+      "id": "document",
+      "label": "Write documentation",
+      "icon": "📚",
+      "instruction": "Write clear, well-structured documentation tailored to the target audience.",
+      "placeholder": "e.g. Write a README for our internal CLI that deploys preview environments. Readers are new engineers in their first week.",
+      "checklist": [
+        "What to document",
+        "Target reader",
+        "Type of doc (README, guide, reference)",
+        "Key points to cover",
+        "Existing material to build on"
+      ]
+    },
+    {
+      "id": "explain",
+      "label": "Explain a concept",
+      "icon": "💡",
+      "instruction": "Explain the concept clearly, building from fundamentals to practical application, with concrete examples.",
+      "placeholder": "e.g. Explain how database isolation levels work and when to use each, with PostgreSQL examples.",
+      "checklist": [
+        "Concept to explain",
+        "Your current understanding",
+        "Why you need it",
+        "Depth wanted"
+      ]
+    },
+    {
+      "id": "migrate",
+      "label": "Migration plan",
+      "icon": "🚚",
+      "instruction": "Produce a safe, incremental migration plan with phases, risks, rollback strategy and validation steps.",
+      "placeholder": "e.g. Migrate our monolith’s user module from MySQL 5.7 to PostgreSQL 16 with zero downtime. ~40 tables, 300 GB.",
+      "checklist": [
+        "Current state",
+        "Target state",
+        "Data volume",
+        "Downtime tolerance",
+        "Dependencies & consumers",
+        "Rollback requirements",
+        "Timeline"
+      ]
+    },
+    {
+      "id": "ui-design",
+      "label": "UI / UX design",
+      "icon": "🖌️",
+      "instruction": "Design the interface: layout, hierarchy, components, states and interactions, with rationale for each decision.",
+      "placeholder": "e.g. Design the onboarding flow for a B2B analytics app: account setup, connecting a data source, and the first dashboard. Users are non-technical managers.",
+      "checklist": [
+        "Screen or flow",
+        "Target users",
+        "User goals",
+        "Content & data shown",
+        "Platform & breakpoints",
+        "Brand / design system",
+        "States to cover (empty, loading, error)"
+      ]
+    },
+    {
+      "id": "compare",
+      "label": "Compare options",
+      "icon": "⚖️",
+      "instruction": "Compare the candidate options objectively against relevant criteria and give a clear recommendation.",
+      "placeholder": "e.g. Compare Kafka, RabbitMQ and AWS SQS for our order-event pipeline (~5k msg/s, ordering per customer, small team).",
+      "checklist": [
+        "Options to compare",
+        "Use case",
+        "Evaluation criteria",
+        "Constraints (team skills, budget, cloud)",
+        "Decision deadline"
+      ]
+    }
+  ],
+  "techStack": [
+    {
+      "group": "Languages",
+      "items": [
+        "JavaScript",
+        "TypeScript",
+        "Python",
+        "Java",
+        "Go",
+        "C#",
+        "Kotlin",
+        "Rust",
+        "Swift",
+        "PHP",
+        "Ruby",
+        "SQL"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "Vue",
+        "Angular",
+        "Svelte",
+        "Tailwind CSS",
+        "HTML/CSS"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "Node.js",
+        "Express",
+        "NestJS",
+        "Spring Boot",
+        "Django",
+        "FastAPI",
+        ".NET",
+        "Gin"
+      ]
+    },
+    {
+      "group": "Data",
+      "items": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "Elasticsearch",
+        "Kafka",
+        "DynamoDB",
+        "Snowflake"
+      ]
+    },
+    {
+      "group": "Cloud & Ops",
+      "items": [
+        "AWS",
+        "Azure",
+        "GCP",
+        "Docker",
+        "Kubernetes",
+        "Terraform",
+        "GitHub Actions"
+      ]
+    },
+    {
+      "group": "Design",
+      "items": [
+        "Figma",
+        "Material Design",
+        "Apple HIG",
+        "Design tokens"
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "production",
+      "label": "Production-ready",
+      "instruction": "The solution must be production-ready, not a toy example."
+    },
+    {
+      "id": "errors",
+      "label": "Robust error handling",
+      "instruction": "Handle errors and edge cases explicitly; never swallow errors silently."
+    },
+    {
+      "id": "tests",
+      "label": "Include tests",
+      "instruction": "Include automated tests that cover the main behaviour and key edge cases."
+    },
+    {
+      "id": "security",
+      "label": "Security best practices",
+      "instruction": "Follow security best practices (input validation, least privilege, no secrets in code, OWASP guidance)."
+    },
+    {
+      "id": "performance",
+      "label": "Performance-aware",
+      "instruction": "Consider performance and scalability; call out time/space complexity where relevant."
+    },
+    {
+      "id": "solid",
+      "label": "Clean code / SOLID",
+      "instruction": "Follow clean code and SOLID principles with clear naming and small, focused units."
+    },
+    {
+      "id": "a11y",
+      "label": "Accessibility (WCAG AA)",
+      "instruction": "Meet WCAG 2.2 AA accessibility requirements (contrast, keyboard access, semantics, focus states)."
+    },
+    {
+      "id": "no-deps",
+      "label": "Minimal dependencies",
+      "instruction": "Avoid introducing new third-party dependencies unless clearly justified."
+    },
+    {
+      "id": "backcompat",
+      "label": "Backward compatible",
+      "instruction": "Preserve backward compatibility with existing interfaces and data."
+    },
+    {
+      "id": "comments",
+      "label": "Well commented",
+      "instruction": "Comment non-obvious logic and document public interfaces."
+    },
+    {
+      "id": "observability",
+      "label": "Observability",
+      "instruction": "Include structured logging, metrics and tracing hooks where appropriate."
+    },
+    {
+      "id": "cost",
+      "label": "Cost-conscious",
+      "instruction": "Keep infrastructure and runtime cost in mind and call out cost implications."
+    }
+  ],
+  "reasoning": [
+    {
+      "id": "clarify",
+      "label": "Ask clarifying questions first",
+      "instruction": "If any requirement is ambiguous or missing, ask concise clarifying questions before producing the final answer."
+    },
+    {
+      "id": "assumptions",
+      "label": "State assumptions",
+      "instruction": "Explicitly list any assumptions you make."
+    },
+    {
+      "id": "stepwise",
+      "label": "Think step by step",
+      "instruction": "Reason through the problem step by step before giving the final answer."
+    },
+    {
+      "id": "alternatives",
+      "label": "Offer alternatives & trade-offs",
+      "instruction": "Present at least two viable approaches with their trade-offs, then recommend one and justify it."
+    },
+    {
+      "id": "self-review",
+      "label": "Self-review before answering",
+      "instruction": "Before finalising, review your answer against the requirements and success criteria and fix any gaps."
+    },
+    {
+      "id": "risks",
+      "label": "Highlight risks",
+      "instruction": "Highlight risks, pitfalls and anything that needs human verification."
+    }
+  ],
+  "outputFormats": [
+    {
+      "id": "structured-md",
+      "label": "Structured Markdown",
+      "instruction": "Respond in well-structured Markdown with clear headings, bullet points and fenced code blocks."
+    },
+    {
+      "id": "code-first",
+      "label": "Code first, brief notes",
+      "instruction": "Lead with complete, runnable code in fenced blocks, followed by brief explanatory notes."
+    },
+    {
+      "id": "step-by-step",
+      "label": "Step-by-step guide",
+      "instruction": "Respond as a numbered, step-by-step guide that the reader can follow in order."
+    },
+    {
+      "id": "table",
+      "label": "Comparison table",
+      "instruction": "Use a Markdown table to compare options, followed by a short recommendation."
+    },
+    {
+      "id": "adr",
+      "label": "Architecture Decision Record",
+      "instruction": "Respond as an ADR with sections: Title, Status, Context, Decision, Alternatives Considered, Consequences."
+    },
+    {
+      "id": "mermaid",
+      "label": "Include diagrams (Mermaid)",
+      "instruction": "Include Mermaid diagrams (in ```mermaid blocks) to illustrate architecture or flows."
+    },
+    {
+      "id": "json",
+      "label": "JSON only",
+      "instruction": "Respond with valid JSON only, no prose before or after it."
+    },
+    {
+      "id": "checklist",
+      "label": "Checklist",
+      "instruction": "Respond as an actionable checklist grouped by category."
+    }
+  ],
+  "audiences": [
+    {
+      "id": "self",
+      "label": "Me (experienced engineer)",
+      "instruction": "The reader is an experienced engineer: skip basics and be precise."
+    },
+    {
+      "id": "junior",
+      "label": "Junior developer",
+      "instruction": "The reader is a junior developer: explain the reasoning and define jargon."
+    },
+    {
+      "id": "team",
+      "label": "Engineering team",
+      "instruction": "The reader is an engineering team: be precise and actionable."
+    },
+    {
+      "id": "stakeholders",
+      "label": "Non-technical stakeholders",
+      "instruction": "The reader is non-technical: avoid jargon and focus on impact, cost and risk."
+    }
+  ],
+  "tones": [
+    {
+      "id": "concise",
+      "label": "Concise",
+      "instruction": "Be concise and direct. No filler."
+    },
+    {
+      "id": "detailed",
+      "label": "Detailed",
+      "instruction": "Be thorough and detailed; completeness matters more than brevity."
+    },
+    {
+      "id": "mentor",
+      "label": "Mentoring",
+      "instruction": "Use a supportive, teaching tone and explain the why behind each recommendation."
+    },
+    {
+      "id": "formal",
+      "label": "Formal",
+      "instruction": "Use a formal, professional tone suitable for documentation."
+    }
+  ],
+  "lengths": [
+    {
+      "id": "any",
+      "label": "Auto",
+      "instruction": ""
+    },
+    {
+      "id": "short",
+      "label": "Short",
+      "instruction": "Keep the response short (roughly under 300 words, excluding code)."
+    },
+    {
+      "id": "medium",
+      "label": "Medium",
+      "instruction": "Aim for a medium-length response (roughly 300–800 words, excluding code)."
+    },
+    {
+      "id": "long",
+      "label": "Long",
+      "instruction": "A long, comprehensive response is welcome."
+    }
+  ],
+  "promptStyles": [
+    {
+      "id": "markdown",
+      "label": "Markdown sections",
+      "hint": "Readable, works with every model"
+    },
+    {
+      "id": "xml",
+      "label": "XML tags",
+      "hint": "Best for Claude: clear section boundaries"
+    },
+    {
+      "id": "plain",
+      "label": "Plain text",
+      "hint": "Compact, for chat boxes"
+    }
+  ]
+}

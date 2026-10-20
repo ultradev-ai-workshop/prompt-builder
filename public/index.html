@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prompt Builder</title>
+  <meta name="description" content="Build well-structured, role-based prompts for technical work." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">⚡</span>
+      <div>
+        <h1>Prompt Builder</h1>
+        <p>Role-based prompts for technical work</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" id="resetBtn" type="button" title="Clear all inputs">Reset</button>
+      <button class="btn btn-icon" id="themeBtn" type="button" aria-label="Toggle colour theme" title="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <!-- ============ BUILDER FORM ============ -->
+    <form class="builder" id="builder" autocomplete="off" onsubmit="return false">
+
+      <section class="card" aria-labelledby="s1">
+        <header class="card-head">
+          <span class="step">1</span>
+          <div>
+            <h2 id="s1">Choose roles</h2>
+            <p>Who should the AI act as? Pick one or more.</p>
+          </div>
+        </header>
+        <div class="role-toolbar">
+          <input type="search" id="roleSearch" class="input" placeholder="Search roles…" aria-label="Search roles" />
+          <div class="chips chips-compact" id="roleCategories" role="radiogroup" aria-label="Filter by category"></div>
+        </div>
+        <div class="role-grid" id="roleGrid" role="group" aria-label="Roles"></div>
+        <div class="role-detail" id="roleDetail" hidden></div>
+      </section>
+
+      <section class="card" aria-labelledby="s2">
+        <header class="card-head">
+          <span class="step">2</span>
+          <div>
+            <h2 id="s2">Describe the task</h2>
+            <p>What do you need done? Be specific.</p>
+          </div>
+        </header>
+        <label class="label">Task type</label>
+        <div class="chips" id="taskTypes" role="radiogroup" aria-label="Task type"></div>
+
+        <label class="label" for="description">Description <span class="req">*</span></label>
+        <textarea id="description" class="input" rows="6" data-field="description"
+          placeholder="e.g. Build a REST endpoint that lets users upload a CSV of orders, validates each row, and stores valid orders in PostgreSQL. Invalid rows should be returned with line numbers and reasons."></textarea>
+        <div class="field-meta"><span id="descHint">Aim for at least a few sentences: what, why, and any specifics.</span><span id="descCount">0</span></div>
+
+        <div class="guide" id="taskGuide" hidden>
+          <div class="guide-head">
+            <span id="guideTitle">Include in your description</span>
+            <button type="button" class="btn btn-sm" id="insertOutline" title="Add these headings to the description">Insert outline</button>
+          </div>
+          <ul class="guide-list" id="guideList"></ul>
+        </div>
+
+        <label class="label" for="context">Background context <span class="opt">optional</span></label>
+        <textarea id="context" class="input" rows="3" data-field="context"
+          placeholder="Existing system, business domain, current state, relevant code or error messages…"></textarea>
+      </section>
+
+      <section class="card" aria-labelledby="s3">
+        <header class="card-head">
+          <span class="step">3</span>
+          <div>
+            <h2 id="s3">Tech stack &amp; focus</h2>
+            <p>Ground the answer in your environment and priorities.</p>
+          </div>
+        </header>
+        <div id="techStack" class="stack-groups"></div>
+        <label class="label" for="customStack">Other technologies <span class="opt">comma-separated</span></label>
+        <input id="customStack" class="input" data-field="customStack" placeholder="e.g. Prisma, BullMQ, Vite" />
+
+        <div id="focusWrap" hidden>
+          <label class="label">Focus areas <span class="opt" id="focusRoleName"></span></label>
+          <div class="chips" id="focusAreas" aria-label="Focus areas"></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="s4">
+        <header class="card-head">
+          <span class="step">4</span>
+          <div>
+            <h2 id="s4">Requirements &amp; approach</h2>
+            <p>Set the quality bar and how the AI should reason.</p>
+          </div>
+        </header>
+        <label class="label">Constraints</label>
+        <div class="chips" id="constraints" aria-label="Constraints"></div>
+        <label class="label" for="customConstraints">Custom requirements <span class="opt">one per line</span></label>
+        <textarea id="customConstraints" class="input" rows="2" data-field="customConstraints"
+          placeholder="e.g. Must run on Node 20&#10;Response time under 200 ms at p95"></textarea>
+
+        <label class="label">Approach</label>
+        <div class="chips" id="reasoning" aria-label="Approach"></div>
+      </section>
+
+      <section class="card" aria-labelledby="s5">
+        <header class="card-head">
+          <span class="step">5</span>
+          <div>
+            <h2 id="s5">Output</h2>
+            <p>Shape what the answer looks like.</p>
+          </div>
+        </header>
+        <label class="label">Format</label>
+        <div class="chips" id="outputFormats" aria-label="Output format"></div>
+
+        <div class="grid-2">
+          <div>
+            <label class="label" for="audience">Audience</label>
+            <select id="audience" class="input" data-field="audience"></select>
+          </div>
+          <div>
+            <label class="label">Length</label>
+            <div class="segmented" id="lengths" role="radiogroup" aria-label="Length"></div>
+          </div>
+        </div>
+
+        <label class="label">Tone</label>
+        <div class="segmented" id="tones" role="radiogroup" aria-label="Tone"></div>
+
+        <label class="label" for="successCriteria">Success criteria <span class="opt">one per line</span></label>
+        <textarea id="successCriteria" class="input" rows="3" data-field="successCriteria"
+          placeholder="e.g. Handles files up to 50 MB&#10;All validation errors are reported, not just the first"></textarea>
+
+        <details class="advanced">
+          <summary>Examples (few-shot)</summary>
+          <textarea id="examples" class="input" rows="4" data-field="examples"
+            placeholder="Paste an example of the output style or quality you expect…"></textarea>
+        </details>
+      </section>
+    </form>
+
+    <!-- ============ OUTPUT PANEL ============ -->
+    <aside class="output" aria-label="Generated prompt">
+      <div class="output-inner">
+        <div class="output-head">
+          <div class="score" id="score" title="Prompt strength">
+            <svg viewBox="0 0 36 36" aria-hidden="true">
+              <circle class="score-track" cx="18" cy="18" r="15.9" />
+              <circle class="score-bar" id="scoreBar" cx="18" cy="18" r="15.9" />
+            </svg>
+            <span id="scoreValue">0</span>
+          </div>
+          <div class="output-title">
+            <h2>Your prompt</h2>
+            <p id="stats">0 words · ~0 tokens</p>
+          </div>
+        </div>
+
+        <div class="segmented segmented-full" id="styles" role="radiogroup" aria-label="Prompt style"></div>
+
+        <ul class="tips" id="tips"></ul>
+
+        <div class="preview-wrap">
+          <pre class="preview" id="preview" tabindex="0" aria-live="polite"></pre>
+          <div class="empty" id="empty">
+            <span aria-hidden="true">✍️</span>
+            <p>Pick a role and describe your task.<br />Your prompt builds here as you type.</p>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="copyBtn" type="button">Copy prompt <kbd>⌘↵</kbd></button>
+          <button class="btn" id="downloadBtn" type="button" title="Download as file">Download</button>
+          <button class="btn" id="saveBtn" type="button" title="Save as template">Save</button>
+        </div>
+
+        <div class="ai">
+          <label class="switch">
+            <input type="checkbox" id="aiToggle" />
+            <span class="switch-track" aria-hidden="true"></span>
+            <span><strong>AI features</strong> <small>uses Claude API tokens</small></span>
+          </label>
+          <div class="ai-body" id="aiBody" hidden>
+            <p class="ai-status" id="aiStatus"></p>
+            <div class="ai-actions">
+              <button class="btn" id="refineBtn" type="button" title="Improve the prompt and find missing information">✨ Refine with AI</button>
+              <button class="btn" id="testBtn" type="button" title="Run the prompt and see the answer">▶ Test it</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="saved" id="savedWrap">
+          <div class="saved-head">
+            <h3>Saved templates</h3>
+            <div class="saved-tools">
+              <button class="btn btn-sm" id="importBtn" type="button" title="Import templates from a JSON file">Import</button>
+              <button class="btn btn-sm" id="exportBtn" type="button" title="Export all templates as JSON">Export</button>
+            </div>
+          </div>
+          <ul id="savedList"></ul>
+          <p class="muted" id="savedEmpty">No templates yet. Click <strong>Save</strong> to keep this prompt; saving again under the same name adds a new version.</p>
+          <input type="file" id="importFile" accept=".json,application/json" hidden />
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ AI DIALOGS ============ -->
+  <dialog class="dialog" id="refineDialog" aria-labelledby="refineTitle">
+    <header class="dialog-head">
+      <h2 id="refineTitle">✨ Refined prompt</h2>
+      <button class="btn btn-icon" type="button" data-close aria-label="Close">×</button>
+    </header>
+    <div class="dialog-body">
+      <div class="loading" id="refineLoading"><span class="spinner"></span> Refining your prompt…</div>
+      <div id="refineResult" hidden>
+        <section id="refineQuestionsWrap">
+          <h3>Missing information</h3>
+          <p class="muted">Answer what you can, then rebuild. Answers are added to the Background context.</p>
+          <ol class="questions" id="refineQuestions"></ol>
+        </section>
+        <section>
+          <h3>What changed</h3>
+          <ul class="changes" id="refineChanges"></ul>
+        </section>
+        <section>
+          <h3>Improved prompt</h3>
+          <pre class="preview preview-sm" id="refinePrompt"></pre>
+        </section>
+      </div>
+    </div>
+    <footer class="dialog-foot">
+      <span class="muted" id="refineUsage"></span>
+      <button class="btn" type="button" id="applyAnswersBtn">Add answers &amp; rebuild</button>
+      <button class="btn" type="button" id="copyRefinedBtn">Copy</button>
+      <button class="btn btn-primary" type="button" id="testRefinedBtn">▶ Test refined</button>
+    </footer>
+  </dialog>
+
+  <dialog class="dialog" id="testDialog" aria-labelledby="testTitle">
+    <header class="dialog-head">
+      <h2 id="testTitle">▶ Test run</h2>
+      <button class="btn btn-icon" type="button" data-close aria-label="Close">×</button>
+    </header>
+    <div class="dialog-body">
+      <div class="loading" id="testLoading"><span class="spinner"></span> Thinking…</div>
+      <pre class="answer" id="testOutput" aria-live="polite"></pre>
+    </div>
+    <footer class="dialog-foot">
+      <span class="muted" id="testUsage"></span>
+      <button class="btn" type="button" id="stopTestBtn">Stop</button>
+      <button class="btn btn-primary" type="button" id="copyAnswerBtn">Copy answer</button>
+    </footer>
+  </dialog>
+
+  <!-- ============ CUSTOM ROLE DIALOG ============ -->
+  <dialog class="dialog" id="roleDialog" aria-labelledby="roleDialogTitle">
+    <form id="roleForm" novalidate>
+      <header class="dialog-head">
+        <h2 id="roleDialogTitle">New role</h2>
+        <button class="btn btn-icon" type="button" data-close aria-label="Close">×</button>
+      </header>
+      <div class="dialog-body">
+        <div class="grid-role">
+          <div>
+            <label class="label" for="rfIcon">Icon</label>
+            <input id="rfIcon" name="icon" class="input input-icon" maxlength="4" placeholder="🧑‍💻" />
+          </div>
+          <div>
+            <label class="label" for="rfTitle">Title <span class="req">*</span></label>
+            <input id="rfTitle" name="title" class="input" required placeholder="e.g. Senior Product Manager" />
+          </div>
+          <div>
+            <label class="label" for="rfCategory">Category</label>
+            <input id="rfCategory" name="category" class="input" list="roleCategoryList" placeholder="Custom" />
+            <datalist id="roleCategoryList"></datalist>
+          </div>
+        </div>
+        <label class="label" for="rfDescription">Short description <span class="req">*</span></label>
+        <input id="rfDescription" name="description" class="input" required placeholder="One line shown on the role card" />
+        <label class="label" for="rfPersona">Persona <span class="req">*</span> <span class="opt">how the AI should see itself</span></label>
+        <textarea id="rfPersona" name="persona" class="input" rows="3" required placeholder="You are a Senior Product Manager with 10+ years of experience…"></textarea>
+        <div class="grid-3">
+          <div>
+            <label class="label" for="rfExpertise">Expertise <span class="opt">one per line</span></label>
+            <textarea id="rfExpertise" name="expertise" class="input" rows="6"></textarea>
+          </div>
+          <div>
+            <label class="label" for="rfFocus">Focus areas <span class="opt">one per line</span></label>
+            <textarea id="rfFocus" name="focusAreas" class="input" rows="6"></textarea>
+          </div>
+          <div>
+            <label class="label" for="rfPrinciples">Principles <span class="opt">one per line</span></label>
+            <textarea id="rfPrinciples" name="principles" class="input" rows="6"></textarea>
+          </div>
+        </div>
+        <p class="form-error" id="roleFormError" role="alert" hidden></p>
+      </div>
+      <footer class="dialog-foot">
+        <button class="btn btn-danger" type="button" id="deleteRoleBtn">Delete</button>
+        <span class="muted">Saved in this browser</span>
+        <button class="btn" type="button" id="copyRoleJsonBtn" title="Copy as an entry for data/roles.json">Copy JSON</button>
+        <button class="btn btn-primary" type="submit">Save role</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- ============ VERSION HISTORY DIALOG ============ -->
+  <dialog class="dialog dialog-wide" id="historyDialog" aria-labelledby="historyTitle">
+    <header class="dialog-head">
+      <h2 id="historyTitle">Version history</h2>
+      <button class="btn btn-icon" type="button" data-close aria-label="Close">×</button>
+    </header>
+    <div class="history">
+      <ol class="history-list" id="historyList" aria-label="Versions"></ol>
+      <div class="history-diff" id="historyDiff"></div>
+    </div>
+    <footer class="dialog-foot">
+      <span class="muted" id="historyMeta"></span>
+      <button class="btn btn-primary" type="button" id="restoreVersionBtn">Load this version</button>
+    </footer>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/js/prompt-builder.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
