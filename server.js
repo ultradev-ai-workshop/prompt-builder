@@ -79,7 +79,7 @@ const server = http.createServer(async (req, res) => {
       const state = JSON.parse((await readBody(req)) || '{}');
       const data = { roles: readData('roles.json').roles, options: readData('options.json') };
       const prompt = PromptBuilder.build(state, data);
-      return sendJson(res, 200, { prompt, tokens: PromptBuilder.estimateTokens(prompt), ...PromptBuilder.analyze(state) });
+      return sendJson(res, 200, { prompt, tokens: PromptBuilder.estimateTokens(prompt), ...PromptBuilder.analyze(state, data) });
     }
 
     if (req.method === 'GET' && pathname === '/api/ai/status') {

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Prompt Builder</title>
-  <meta name="description" content="Build well-structured, role-based prompts for technical work." />
+  <meta name="description" content="Build well-structured, role-based prompts for software, finance, wellness, coaching and business work." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,7 +17,7 @@
       <span class="brand-mark" aria-hidden="true">⚡</span>
       <div>
         <h1>Prompt Builder</h1>
-        <p>Role-based prompts for technical work</p>
+        <p>Role-based prompts for software, finance, wellness, coaching and more</p>
       </div>
     </div>
     <div class="topbar-actions">
@@ -34,10 +34,12 @@
         <header class="card-head">
           <span class="step">1</span>
           <div>
-            <h2 id="s1">Choose roles</h2>
+            <h2 id="s1">Choose a profession &amp; roles</h2>
             <p>Who should the AI act as? Pick one or more.</p>
           </div>
         </header>
+        <div class="chips profession-chips" id="professions" role="radiogroup" aria-label="Profession"></div>
+        <p class="profession-desc" id="professionDesc"></p>
         <div class="role-toolbar">
           <input type="search" id="roleSearch" class="input" placeholder="Search roles…" aria-label="Search roles" />
           <div class="chips chips-compact" id="roleCategories" role="radiogroup" aria-label="Filter by category"></div>
@@ -80,16 +82,24 @@
           <span class="step">3</span>
           <div>
             <h2 id="s3">Tech stack &amp; focus</h2>
-            <p>Ground the answer in your environment and priorities.</p>
+            <p id="contextHint">Ground the answer in your environment and priorities.</p>
           </div>
         </header>
         <div id="techStack" class="stack-groups"></div>
-        <label class="label" for="customStack">Other technologies <span class="opt">comma-separated</span></label>
+        <label class="label" for="customStack"><span id="customStackLabel">Other technologies</span> <span class="opt">comma-separated</span></label>
         <input id="customStack" class="input" data-field="customStack" placeholder="e.g. Prisma, BullMQ, Vite" />
 
         <div id="focusWrap" hidden>
           <label class="label">Focus areas <span class="opt" id="focusRoleName"></span></label>
           <div class="chips" id="focusAreas" aria-label="Focus areas"></div>
+        </div>
+
+        <div id="patternsWrap" hidden>
+          <div class="label-row">
+            <label class="label">Design patterns &amp; implementation style <span class="opt" id="patternsHint"></span></label>
+            <button type="button" class="btn btn-sm" id="patternsAllBtn">Show all</button>
+          </div>
+          <div id="patterns" class="stack-groups" aria-label="Design patterns and implementation style"></div>
         </div>
       </section>
 
@@ -109,6 +119,15 @@
 
         <label class="label">Approach</label>
         <div class="chips" id="reasoning" aria-label="Approach"></div>
+
+        <div class="guardrails" id="guardrailsWrap" hidden>
+          <label class="switch">
+            <input type="checkbox" id="guardrailsToggle" />
+            <span class="switch-track" aria-hidden="true"></span>
+            <span><strong>Professional guardrails</strong> <small>safety and scope rules for the selected professions</small></span>
+          </label>
+          <ul class="guardrail-list" id="guardrailList"></ul>
+        </div>
       </section>
 
       <section class="card" aria-labelledby="s5">
@@ -285,6 +304,8 @@
             <datalist id="roleCategoryList"></datalist>
           </div>
         </div>
+        <label class="label" for="rfProfession">Profession</label>
+        <select id="rfProfession" name="profession" class="input"></select>
         <label class="label" for="rfDescription">Short description <span class="req">*</span></label>
         <input id="rfDescription" name="description" class="input" required placeholder="One line shown on the role card" />
         <label class="label" for="rfPersona">Persona <span class="req">*</span> <span class="opt">how the AI should see itself</span></label>

@@ -14,6 +14,7 @@
   const EXPORT_FORMAT = 'prompt-builder/templates';
 
   const DEFAULT_STATE = {
+    profession: PromptBuilder.DEFAULT_PROFESSION, // filters roles and options; roles from others stay selected
     roleIds: [],      // expert roles, in the order selected
     reviewerIds: [],  // roles that critique the draft
     taskType: null,
@@ -22,6 +23,7 @@
     techStack: [],
     customStack: '',
     focusAreas: [],
+    patterns: [],     // design pattern / implementation style labels
     constraints: [],
     customConstraints: '',
     reasoning: ['assumptions', 'self-review'],
@@ -31,6 +33,7 @@
     length: 'any',
     successCriteria: '',
     examples: '',
+    guardrails: true, // include the professions' safety & scope rules
     style: 'markdown'
   };
 
@@ -63,6 +66,7 @@
       const v = src[key];
       if (Array.isArray(def)) out[key] = Array.isArray(v) ? v.filter((x) => typeof x === 'string') : [...def];
       else if (def === null) out[key] = typeof v === 'string' ? v : null;
+      else if (typeof def === 'boolean') out[key] = typeof v === 'boolean' ? v : def;
       else out[key] = typeof v === 'string' ? v : def;
     }
     // Older drafts and templates stored a single role as `roleId`.
@@ -89,6 +93,65 @@
 
   const toggleIn = (arr, value) => (arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]);
 
+  /* ---------------- Professions ---------------- */
+
+  const currentProfession = () => (data.options.professions || []).find((p) => p.id === state.profession);
+  /** Option items that apply to the active profession. */
+  const visible = (list) => PromptBuilder.forProfession(list, state.profession);
+  const professionRoles = () => data.roles.filter((r) => (r.profession || PromptBuilder.DEFAULT_PROFESSION) === state.profession);
+
+  function renderProfessions() {
+    $('#professions').replaceChildren(
+      ...(data.options.professions || []).map((p) =>
+        el('button', {
+          type: 'button', class: 'chip', role: 'radio', 'aria-checked': String(state.profession === p.id), title: p.description,
+          on: { click: () => setProfession(p.id) }
+        }, `${p.icon} ${p.label}`)
+      )
+    );
+    renderProfessionText();
+  }
+
+  function renderProfessionText() {
+    const p = currentProfession();
+    $('#professionDesc').textContent = p?.description || '';
+    $('#s3').textContent = p?.contextTitle || 'Tech stack & focus';
+    $('#contextHint').textContent = p?.contextHint || '';
+    $('#customStackLabel').textContent = p?.customContextLabel || 'Other technologies';
+    $('#customStack').placeholder = p?.customContextPlaceholder || '';
+    $('#context').placeholder = p?.contextPlaceholder || DEFAULT_CONTEXT_PLACEHOLDER;
+    if (p?.constraintsPlaceholder) $('#customConstraints').placeholder = `e.g. ${p.constraintsPlaceholder}`;
+    if (p?.successPlaceholder) $('#successCriteria').placeholder = `e.g. ${p.successPlaceholder}`;
+  }
+
+  /**
+   * Switch profession. Option selections the new profession doesn't offer are dropped so nothing
+   * hidden still affects the prompt; selected roles are kept so roles can be combined across professions.
+   */
+  function setProfession(id) {
+    if (id === state.profession) return;
+    const o = data.options;
+    const ids = (list) => new Set(PromptBuilder.forProfession(list, id).map((x) => x.id));
+    const keep = (key, list) => { const ok = ids(list); return state[key].filter((v) => ok.has(v)); };
+    const stackItems = new Set(PromptBuilder.forProfession(o.techStack, id).flatMap((g) => g.items));
+    const patternItems = new Set(PromptBuilder.forProfession(o.patterns, id).flatMap((g) => g.items.map((it) => it.label)));
+    const audiences = ids(o.audiences);
+    const profession = o.professions.find((p) => p.id === id);
+    roleFilter.category = 'All';
+    showAllPatterns = false;
+    loadState({
+      ...state,
+      profession: id,
+      taskType: ids(o.taskTypes).has(state.taskType) ? state.taskType : null,
+      constraints: keep('constraints', o.constraints),
+      reasoning: keep('reasoning', o.reasoning),
+      outputFormats: keep('outputFormats', o.outputFormats),
+      audience: audiences.has(state.audience) ? state.audience : profession?.defaultAudience || [...audiences][0] || null,
+      techStack: state.techStack.filter((t) => stackItems.has(t)),
+      patterns: state.patterns.filter((x) => patternItems.has(x))
+    });
+  }
+
   /* ---------------- Generic controls ---------------- */
 
   /** Single-select chips (radio semantics, click again to deselect). */
@@ -112,12 +175,12 @@
   function renderToggleChips(container, items, key) {
     container.replaceChildren(
       ...items.map((it) => {
-        const id = typeof it === 'string' ? it : it.id;
+        const id = typeof it === 'string' ? it : it.id ?? it.label;
         const label = typeof it === 'string' ? it : it.label;
         return el('button', {
           type: 'button', class: 'chip',
           'aria-pressed': String((state[key] || []).includes(id)),
-          title: it.instruction || '',
+          title: it.instruction || it.hint || '',
           on: { click: (e) => {
             setState({ [key]: toggleIn(state[key] || [], id) });
             e.currentTarget.setAttribute('aria-pressed', String(state[key].includes(id)));
@@ -142,7 +205,7 @@
   /* ---------------- Roles ---------------- */
 
   function renderRoleCategories() {
-    const cats = ['All', ...new Set(data.roles.map((r) => r.category))];
+    const cats = ['All', ...new Set(professionRoles().map((r) => r.category))];
     $('#roleCategories').replaceChildren(
       ...cats.map((c) =>
         el('button', {
@@ -155,7 +218,7 @@
 
   function renderRoleGrid() {
     const q = roleFilter.query.toLowerCase();
-    const roles = data.roles.filter((r) =>
+    const roles = professionRoles().filter((r) =>
       (roleFilter.category === 'All' || r.category === roleFilter.category) &&
       (!q || `${r.title} ${r.description} ${r.expertise.join(' ')}`.toLowerCase().includes(q))
     );
@@ -194,7 +257,7 @@
     reviewerIds = reviewerIds.filter((id) => !roleIds.includes(id));
     const offered = new Set(roleIds.flatMap((id) => data.roles.find((r) => r.id === id)?.focusAreas || []));
     const focusAreas = state.focusAreas.filter((f) => offered.has(f));
-    setState({ roleIds, reviewerIds, focusAreas }, { rerender: [renderRoleGrid, renderRoleDetail, renderFocusAreas] });
+    setState({ roleIds, reviewerIds, focusAreas }, { rerender: [renderRoleGrid, renderRoleDetail, renderFocusAreas, renderPatterns, renderGuardrails] });
   }
 
   /** Clicking a card adds it as an expert, or removes it if it's already selected in either mode. */
@@ -223,6 +286,12 @@
     box.hidden = !selected.length;
     if (!selected.length) return;
 
+    // Roles kept from another profession are labelled so the mix is visible.
+    const otherProfession = (role) => {
+      if ((role.profession || PromptBuilder.DEFAULT_PROFESSION) === state.profession) return null;
+      const p = (data.options.professions || []).find((x) => x.id === role.profession);
+      return p ? el('span', { class: 'badge', text: `${p.icon} ${p.label}` }) : null;
+    };
     const modeSwitch = ({ id, mode, role }) =>
       el('div', { class: 'segmented segmented-sm', role: 'radiogroup', 'aria-label': `Mode for ${role.title}` },
         [['expert', 'Expert', 'Shapes the answer'], ['reviewer', 'Reviewer', 'Critiques the draft, then it is revised']].map(([value, label, hint]) =>
@@ -234,11 +303,11 @@
       );
 
     box.replaceChildren(
-      el('p', { class: 'role-hint', text: 'Select more cards to combine roles. Experts shape the answer; reviewers critique the draft so it can be improved.' }),
+      el('p', { class: 'role-hint', text: 'Select more cards to combine roles, even across professions. Experts shape the answer; reviewers critique the draft so it can be improved.' }),
       el('ul', { class: 'selected-roles' }, selected.map((s) =>
         el('li', {}, [
           el('div', { class: 'selected-role-info' }, [
-            el('strong', { text: `${s.role.icon} ${s.role.title}` }),
+            el('strong', { text: `${s.role.icon} ${s.role.title}` }, [otherProfession(s.role)]),
             el('span', { text: s.role.description })
           ]),
           modeSwitch(s),
@@ -261,7 +330,7 @@
 
   function renderTechStack() {
     $('#techStack').replaceChildren(
-      ...data.options.techStack.map((g) => {
+      ...visible(data.options.techStack).map((g) => {
         const chips = el('div', { class: 'chips chips-compact' });
         renderToggleChips(chips, g.items, 'techStack');
         return el('div', { class: 'stack-group' }, [el('h4', { text: g.group }), chips]);
@@ -269,10 +338,47 @@
     );
   }
 
+  /* ---------------- Design patterns ---------------- */
+
+  let showAllPatterns = false;
+
+  /** Pattern groups for the profession; narrowed to the groups the expert roles suggest unless "Show all" is on. */
+  function renderPatterns() {
+    const groups = visible(data.options.patterns);
+    $('#patternsWrap').hidden = !groups.length;
+    if (!groups.length) return;
+    const suggesting = expertRoles().filter((r) => r.patternGroups?.length);
+    const suggested = new Set(suggesting.flatMap((r) => r.patternGroups));
+    const filtered = !showAllPatterns && suggested.size > 0;
+    // Groups with a selected pattern stay visible so selections are never hidden.
+    const shown = groups.filter((g) => !filtered || suggested.has(g.id) || g.items.some((it) => state.patterns.includes(it.label)));
+    $('#patternsHint').textContent = filtered ? `suggested for ${suggesting.map((r) => r.title).join(', ')}` : 'hover a chip for a short description';
+    const btn = $('#patternsAllBtn');
+    btn.hidden = !suggested.size || (filtered && shown.length === groups.length);
+    btn.textContent = showAllPatterns ? 'Show suggested' : `Show all ${groups.length} groups`;
+    $('#patterns').replaceChildren(
+      ...shown.map((g) => {
+        const chips = el('div', { class: 'chips chips-compact' });
+        renderToggleChips(chips, g.items, 'patterns');
+        return el('div', { class: 'stack-group' }, [el('h4', { text: g.group }), chips]);
+      })
+    );
+  }
+
+  /* ---------------- Guardrails ---------------- */
+
+  function renderGuardrails() {
+    const rules = PromptBuilder.guardrailsFor({ ...state, guardrails: true }, data);
+    $('#guardrailsWrap').hidden = !rules.length;
+    $('#guardrailsToggle').checked = state.guardrails;
+    $('#guardrailList').hidden = !state.guardrails;
+    $('#guardrailList').replaceChildren(...rules.map((r) => el('li', { text: r })));
+  }
+
   /* ---------------- Custom roles ---------------- */
 
   const ROLE_LIST_FIELDS = ['expertise', 'focusAreas', 'principles'];
-  const ROLE_TEXT_FIELDS = ['title', 'icon', 'category', 'description', 'persona'];
+  const ROLE_TEXT_FIELDS = ['title', 'icon', 'category', 'profession', 'description', 'persona'];
   let editingRoleId = null; // id of the custom role being edited, null when creating
   let copySourceId = null;  // id of the role being customized into a copy
 
@@ -280,7 +386,8 @@
 
   /** Built-in roles first, then the user's custom roles (marked so the UI can offer editing). */
   function refreshRoles() {
-    data.roles = [...builtInRoles, ...getCustomRoles().map((r) => ({ ...r, custom: true }))];
+    // Custom roles saved before professions existed were all software roles.
+    data.roles = [...builtInRoles, ...getCustomRoles().map((r) => ({ profession: PromptBuilder.DEFAULT_PROFESSION, ...r, custom: true }))];
   }
 
   /** Validate and normalise a role object (from the form or an imported file). Returns null if unusable. */
@@ -292,6 +399,8 @@
     if (!role.title || !role.description || !role.persona) return null;
     role.icon = role.icon || '🧩';
     role.category = role.category || 'Custom';
+    role.profession = role.profession || PromptBuilder.DEFAULT_PROFESSION;
+    if (Array.isArray(r.patternGroups)) role.patternGroups = r.patternGroups.filter((x) => typeof x === 'string');
     return role;
   }
 
@@ -306,8 +415,9 @@
 
   /** Role as it should appear in data/roles.json (field order matches the built-in entries). */
   const toRoleJson = (r) => ({
-    id: r.id, title: r.title, category: r.category, icon: r.icon, description: r.description,
-    persona: r.persona, expertise: r.expertise, focusAreas: r.focusAreas, principles: r.principles
+    id: r.id, title: r.title, profession: r.profession, category: r.category, icon: r.icon, description: r.description,
+    persona: r.persona, expertise: r.expertise, focusAreas: r.focusAreas, principles: r.principles,
+    ...(r.patternGroups?.length ? { patternGroups: r.patternGroups } : {})
   });
 
   function openRoleDialog(role = null, { copy = false } = {}) {
@@ -318,7 +428,9 @@
     $('#roleDialogTitle').textContent = editingRoleId ? 'Edit role' : copy ? `New role based on ${role.title}` : 'New role';
     $('#deleteRoleBtn').hidden = !editingRoleId;
     $('#roleFormError').hidden = true;
-    $('#roleCategoryList').replaceChildren(...[...new Set(data.roles.map((r) => r.category))].map((c) => el('option', { value: c })));
+    $('#roleCategoryList').replaceChildren(...[...new Set(professionRoles().map((r) => r.category))].map((c) => el('option', { value: c })));
+    $('#rfProfession').replaceChildren(...(data.options.professions || []).map((p) => el('option', { value: p.id, text: `${p.icon} ${p.label}` })));
+    form.elements.profession.value = state.profession;
     if (role) {
       for (const f of ROLE_TEXT_FIELDS) form.elements[f].value = role[f] || '';
       for (const f of ROLE_LIST_FIELDS) form.elements[f].value = (role[f] || []).join('\n');
@@ -336,6 +448,8 @@
     const raw = { id: editingRoleId || uniqueRoleId(f.title.value) };
     for (const k of ROLE_TEXT_FIELDS) raw[k] = f[k].value;
     for (const k of ROLE_LIST_FIELDS) raw[k] = f[k].value.split('\n');
+    // Pattern suggestions aren't editable in the form; carry them over from the edited or copied role.
+    raw.patternGroups = data.roles.find((r) => r.id === (editingRoleId || copySourceId))?.patternGroups;
     return cleanRole(raw);
   }
 
@@ -399,13 +513,14 @@
 
   function renderAudience() {
     const select = $('#audience');
-    select.replaceChildren(...data.options.audiences.map((a) => el('option', { value: a.id, text: a.label })));
+    select.replaceChildren(...visible(data.options.audiences).map((a) => el('option', { value: a.id, text: a.label })));
     select.value = state.audience;
   }
 
   /* ---------------- Task guidance ---------------- */
 
   const DEFAULT_PLACEHOLDER = document.getElementById('description').placeholder;
+  const DEFAULT_CONTEXT_PLACEHOLDER = document.getElementById('context').placeholder;
   const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // An item counts as covered once the description has a line starting with "<item>:".
   const hasHeading = (text, item) => new RegExp(`^\\s*${escapeRegExp(item)}\\s*:`, 'im').test(text);
@@ -413,7 +528,7 @@
   function renderTaskGuide() {
     const task = data.options.taskTypes.find((t) => t.id === state.taskType);
     const box = $('#taskGuide');
-    $('#description').placeholder = task?.placeholder || DEFAULT_PLACEHOLDER;
+    $('#description').placeholder = task?.placeholder || currentProfession()?.descriptionPlaceholder || DEFAULT_PLACEHOLDER;
     box.hidden = !task?.checklist?.length;
     if (box.hidden) return;
     $('#guideTitle').textContent = `For “${task.label}”, include:`;
@@ -458,7 +573,7 @@
 
   function updateOutput() {
     currentPrompt = PromptBuilder.build(state, data);
-    const { score, tips } = PromptBuilder.analyze(state);
+    const { score, tips } = PromptBuilder.analyze(state, data);
     const words = currentPrompt.trim() ? currentPrompt.trim().split(/\s+/).length : 0;
 
     $('#preview').innerHTML = highlight(currentPrompt);
@@ -607,9 +722,10 @@
   /* ----- Version history & diff ----- */
 
   const DIFF_FIELDS = [
-    ['roleIds', 'Expert roles', 'roles'], ['reviewerIds', 'Reviewer roles', 'roles'], ['taskType', 'Task type', 'taskTypes'],
+    ['profession', 'Profession', 'professions'], ['roleIds', 'Expert roles', 'roles'], ['reviewerIds', 'Reviewer roles', 'roles'], ['taskType', 'Task type', 'taskTypes'],
     ['description', 'Description'], ['context', 'Background context'], ['techStack', 'Tech stack'], ['customStack', 'Other technologies'],
-    ['focusAreas', 'Focus areas'], ['constraints', 'Constraints', 'constraints'], ['customConstraints', 'Custom requirements'],
+    ['focusAreas', 'Focus areas'], ['patterns', 'Design patterns'], ['constraints', 'Constraints', 'constraints'],
+    ['customConstraints', 'Custom requirements'], ['guardrails', 'Guardrails'],
     ['reasoning', 'Approach', 'reasoning'], ['outputFormats', 'Output format', 'outputFormats'], ['audience', 'Audience', 'audiences'],
     ['tone', 'Tone', 'tones'], ['length', 'Length', 'lengths'], ['successCriteria', 'Success criteria'], ['examples', 'Examples'],
     ['style', 'Prompt style', 'promptStyles']
@@ -618,6 +734,7 @@
 
   /** Human label for an id stored in state (role title, option label…), falling back to the raw id. */
   function labelFor(source, id) {
+    if (typeof id === 'boolean') return id ? 'On' : 'Off';
     if (!source || !id) return id || '—';
     const list = source === 'roles' ? data.roles : data.options[source];
     const item = (list || []).find((x) => x.id === id);
@@ -996,18 +1113,21 @@
 
   function renderAll() {
     const o = data.options;
+    renderProfessions();
     renderRoleCategories();
     renderRoleGrid();
     renderRoleDetail();
     renderFocusAreas();
-    renderRadioChips($('#taskTypes'), o.taskTypes, 'taskType');
+    renderPatterns();
+    renderRadioChips($('#taskTypes'), visible(o.taskTypes), 'taskType');
     renderTechStack();
-    renderToggleChips($('#constraints'), o.constraints, 'constraints');
-    renderToggleChips($('#reasoning'), o.reasoning, 'reasoning');
-    renderToggleChips($('#outputFormats'), o.outputFormats, 'outputFormats');
+    renderToggleChips($('#constraints'), visible(o.constraints), 'constraints');
+    renderToggleChips($('#reasoning'), visible(o.reasoning), 'reasoning');
+    renderGuardrails();
+    renderToggleChips($('#outputFormats'), visible(o.outputFormats), 'outputFormats');
     renderAudience();
-    renderSegmented($('#lengths'), o.lengths, 'length');
-    renderSegmented($('#tones'), o.tones, 'tone');
+    renderSegmented($('#lengths'), visible(o.lengths), 'length');
+    renderSegmented($('#tones'), visible(o.tones), 'tone');
     renderSegmented($('#styles'), o.promptStyles, 'style');
     document.querySelectorAll('[data-field]').forEach((i) => (i.value = state[i.dataset.field] ?? ''));
     renderSaved();
@@ -1034,6 +1154,7 @@
     const roleExists = (id) => data.roles.some((r) => r.id === id);
     state.roleIds = state.roleIds.filter(roleExists);
     state.reviewerIds = state.reviewerIds.filter(roleExists);
+    if (!(data.options.professions || []).some((p) => p.id === state.profession)) state.profession = PromptBuilder.DEFAULT_PROFESSION;
 
     bindTextFields();
     renderAll();
@@ -1045,6 +1166,8 @@
     $('#resetBtn').addEventListener('click', resetAll);
     $('#themeBtn').addEventListener('click', toggleTheme);
     $('#insertOutline').addEventListener('click', insertOutline);
+    $('#patternsAllBtn').addEventListener('click', () => { showAllPatterns = !showAllPatterns; renderPatterns(); });
+    $('#guardrailsToggle').addEventListener('change', (e) => setState({ guardrails: e.target.checked }, { rerender: [renderGuardrails] }));
     $('#roleForm').addEventListener('submit', saveRole);
     $('#deleteRoleBtn').addEventListener('click', deleteRole);
     $('#copyRoleJsonBtn').addEventListener('click', copyRoleJson);

@@ -2,8 +2,9 @@
  * Prompt builder engine — shared by the browser UI and the Node API.
  *
  * Structure follows proven prompt-engineering practice:
- *   Role → Context → Task → Focus → Requirements → Approach → Examples → Output → Success criteria
+ *   Role → Context → Task → Focus → Patterns → Requirements → Guardrails → Approach → Examples → Output → Success criteria
  * Each section is optional and only rendered when it has content.
+ * Options tagged with `professions` belong to those professions; untagged options are shared.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -16,11 +17,40 @@
   const clean = (s) => (s || '').trim();
   /** Expert role ids; also accepts the older single `roleId` field. */
   const roleIdsOf = (state) => (Array.isArray(state.roleIds) && state.roleIds.length ? state.roleIds : state.roleId ? [state.roleId] : []);
+  const DEFAULT_PROFESSION = 'software';
+  const professionOf = (role) => role.profession || DEFAULT_PROFESSION;
+
+  /** Items of an option list that apply to a profession (untagged items apply to all). */
+  const forProfession = (list, professionId) =>
+    (list || []).filter((x) => !x.professions || x.professions.includes(professionId || DEFAULT_PROFESSION));
+
+  /** Expert roles followed by reviewer roles (never both for one role). */
+  function selectedRoles(state, roles) {
+    const expertIds = roleIdsOf(state);
+    return {
+      experts: pickMany(roles, expertIds),
+      reviewers: pickMany(roles, (state.reviewerIds || []).filter((id) => !expertIds.includes(id)))
+    };
+  }
+
+  /**
+   * Guardrails for every profession represented by the selected roles
+   * (or the active profession when no role is selected). Empty when switched off.
+   */
+  function guardrailsFor(state, data) {
+    if (state.guardrails === false) return [];
+    const { experts, reviewers } = selectedRoles(state, data.roles);
+    const ids = [...experts, ...reviewers].map(professionOf);
+    if (!ids.length) ids.push(state.profession || DEFAULT_PROFESSION);
+    const professions = pickMany(data.options?.professions, [...new Set(ids)]);
+    return [...new Set(professions.flatMap((p) => p.guardrails || []))];
+  }
 
   /** Collect the logical sections of the prompt from the current state. */
   function buildSections(state, data) {
     const { roles = [], options = {} } = data;
-    const experts = pickMany(roles, roleIdsOf(state));
+    const { experts, reviewers } = selectedRoles(state, roles);
+    const profession = byId(options.professions, state.profession || DEFAULT_PROFESSION);
     const task = byId(options.taskTypes, state.taskType);
     const audience = byId(options.audiences, state.audience);
     const tone = byId(options.tones, state.tone);
@@ -54,7 +84,7 @@
 
     const ctx = [];
     if (clean(state.context)) ctx.push(clean(state.context));
-    if (stack.length) ctx.push({ lead: 'Tech stack / environment:', items: stack });
+    if (stack.length) ctx.push({ lead: profession?.contextLead || 'Tech stack / environment:', items: stack });
     if (audience) ctx.push(audience.instruction);
     if (ctx.length) sections.push({ key: 'context', title: 'Context', parts: ctx });
 
@@ -67,15 +97,29 @@
       sections.push({ key: 'focus', title: 'Focus Areas', parts: [{ lead: 'Pay particular attention to:', items: state.focusAreas }] });
     }
 
+    if (state.patterns?.length) {
+      sections.push({
+        key: 'design_patterns',
+        title: 'Design Patterns & Implementation Style',
+        parts: [
+          'Apply the following patterns and implementation styles where they genuinely fit, and show briefly where and how each is applied. If one is a poor fit for this problem, say so and explain why instead of forcing it.',
+          { items: state.patterns }
+        ]
+      });
+    }
+
     const reqs = [...constraints.map((c) => c.instruction), ...splitLines(state.customConstraints)];
     if (reqs.length) sections.push({ key: 'requirements', title: 'Requirements & Constraints', parts: [{ items: reqs }] });
+
+    const guardrails = guardrailsFor(state, data);
+    if (guardrails.length) {
+      sections.push({ key: 'guardrails', title: 'Safety & Scope', parts: ['Stay within these professional boundaries:', { items: guardrails }] });
+    }
 
     if (reasoning.length) {
       sections.push({ key: 'approach', title: 'Approach', parts: [{ items: reasoning.map((r) => r.instruction), ordered: true }] });
     }
 
-    const expertIds = roleIdsOf(state);
-    const reviewers = pickMany(roles, (state.reviewerIds || []).filter((id) => !expertIds.includes(id)));
     if (reviewers.length) {
       sections.push({
         key: 'review_perspectives',
@@ -151,18 +195,29 @@
     return render(buildSections(state, data), state.style || 'markdown');
   }
 
-  /** Heuristic prompt-quality analysis with actionable tips. */
-  function analyze(state) {
+  // Software tasks where naming patterns or an implementation style noticeably improves the answer.
+  const PATTERN_TASKS = ['implement', 'design', 'refactor', 'api-design', 'migrate'];
+
+  /** Heuristic prompt-quality analysis with actionable tips. `data` (optional) makes tips profession-aware. */
+  function analyze(state, data = {}) {
+    const profession = byId(data.options?.professions, state.profession || DEFAULT_PROFESSION);
+    const contextName = (profession?.contextTitle || 'a tech stack').toLowerCase();
     const checks = [
       { ok: roleIdsOf(state).length > 0, weight: 15, tip: 'Pick at least one expert role so the model adopts the right expertise.' },
       { ok: clean(state.description).length >= 40, weight: 25, tip: 'Describe the task in more detail (40+ characters): what, why and any specifics.' },
       { ok: !!state.taskType, weight: 10, tip: 'Choose a task type to frame what kind of work is expected.' },
-      { ok: clean(state.context).length > 0 || (state.techStack || []).length > 0 || clean(state.customStack).length > 0, weight: 10, tip: 'Add background context or a tech stack.' },
+      { ok: clean(state.context).length > 0 || (state.techStack || []).length > 0 || clean(state.customStack).length > 0, weight: 10, tip: `Add background context or ${contextName}.` },
       { ok: (state.constraints || []).length > 0 || clean(state.customConstraints).length > 0, weight: 10, tip: 'Add requirements/constraints so the output fits your standards.' },
       { ok: (state.outputFormats || []).length > 0, weight: 10, tip: 'Specify an output format.' },
       { ok: splitLines(state.successCriteria).length > 0, weight: 10, tip: 'Define success criteria: how will you judge a good answer?' },
       { ok: (state.reasoning || []).length > 0, weight: 5, tip: 'Add an approach (e.g. state assumptions, self-review).' },
-      { ok: (state.focusAreas || []).length > 0, weight: 5, tip: 'Select focus areas to prioritise what matters most.' }
+      { ok: (state.focusAreas || []).length > 0, weight: 5, tip: 'Select focus areas to prioritise what matters most.' },
+      // Advisory only (no weight): nudges software design work towards explicit patterns.
+      {
+        ok: !PATTERN_TASKS.includes(state.taskType) || (state.patterns || []).length > 0 || (state.reasoning || []).includes('recommend-patterns'),
+        weight: 0,
+        tip: 'Pick design patterns / an implementation style, or choose “Recommend patterns” under Approach.'
+      }
     ];
     const score = checks.reduce((acc, c) => acc + (c.ok ? c.weight : 0), 0);
     return { score, tips: checks.filter((c) => !c.ok).map((c) => c.tip) };
@@ -171,5 +226,5 @@
   /** Rough token estimate (~4 chars per token for English text). */
   const estimateTokens = (text) => Math.ceil((text || '').length / 4);
 
-  return { build, buildSections, analyze, estimateTokens };
+  return { build, buildSections, analyze, estimateTokens, forProfession, guardrailsFor, DEFAULT_PROFESSION };
 });

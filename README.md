@@ -1,6 +1,6 @@
 # Prompt Builder
 
-Build well-structured, role-based prompts for technical work. Pick a role, describe the task, choose context options, and copy a ready-to-use prompt.
+Build well-structured, role-based prompts for software, finance, Ayurveda, coaching, fitness and business work. Pick a profession and roles, describe the task, choose context options, and copy a ready-to-use prompt.
 
 ## Run
 
@@ -29,6 +29,28 @@ npm start
 
 The key stays on the server and is never sent to the browser. You can set `AI_MODEL` (default `claude-opus-5-5`) and `AI_EFFORT` (default `medium`) in `.env`. Token usage is shown after each call.
 
+## Professions
+
+The profession picker at the top filters everything below it to fit that kind of work:
+
+| Profession | Roles (examples) | Context chips |
+| --- | --- | --- |
+| 💻 Software Professional | Backend, Frontend, Full-Stack, Mobile, Desktop, Embedded/IoT, Game, Architect, DevOps, Data, ML, QA, Security, DBA, Product Manager… | Tech stack, plus **design patterns & implementation style** |
+| 💰 Financial Advisor | Financial Planner, Investment Advisor, Tax Consultant, Retirement Planner, Insurance Advisor, Budgeting Coach | Region & regulation, instruments, goals, risk & horizon |
+| 🌿 Ayurveda Expert | Ayurvedic Physician, Diet Consultant, Panchakarma Specialist, Yoga Therapist, Herbalist | Dosha, season (Ritu), diet, life stage, modalities |
+| 🌱 Life Coach | Life, Career, Executive, Relationship, Wellbeing and Productivity coaches | Life areas, frameworks (GROW, Ikigai…), coaching style |
+| 🏋️ Fitness & Nutrition | Personal Trainer, Sports Nutritionist, Physiotherapist | Goal, equipment, diet |
+| 📈 Business & Marketing | Strategy Advisor, Digital Marketer, Content Strategist, Sales Strategist | Business model, stage, channels, frameworks |
+
+Each profession has its own task types (with checklists), constraints, output formats and audiences. Shared options such as Approach, Tone and Length work for every profession.
+
+- **Switching profession** drops task, constraint, format and context selections that the new profession doesn't offer. Selected roles stay, so you can mix roles across professions, for example an Ayurvedic Physician reviewed by a Personal Trainer. Roles from another profession are labelled in the selected list.
+- **Guardrails:** non-software professions add a *Safety & Scope* section to the prompt (for example "not regulated advice" or "complements, never replaces, medical care"). It covers every profession among the selected roles, and you can turn it off in step 4.
+
+### Design patterns & implementation style (software)
+
+Step 3 includes a catalog of over 100 patterns: GoF creational, structural and behavioural; architecture styles (Clean/Hexagonal, DDD, CQRS, microservices…); backend and distributed systems (Saga, Outbox, Circuit Breaker…); frontend; mobile and desktop; data engineering; cloud and delivery; AI/LLM; games; embedded; and implementation styles (TDD, functional, type-driven…). Each role suggests the groups that matter to it through `patternGroups`, and **Show all** reveals the rest. Selected patterns become a *Design Patterns & Implementation Style* section. If you don't know which patterns to use, pick **Recommend patterns** under Approach.
+
 ## Roles, reviewers and templates
 
 - **Multiple roles:** click as many role cards as you need; click a selected card again to remove it. Each selected role is either:
@@ -54,7 +76,9 @@ Each section is included only when it has content:
 | **Context** | Background text, tech stack, audience |
 | **Task** | Task-type instruction + your description |
 | **Focus Areas** | Role-specific focus areas you select |
+| **Design Patterns & Implementation Style** | Patterns you select (software) |
 | **Requirements & Constraints** | Constraint chips + custom lines |
+| **Safety & Scope** | Guardrails of the selected roles' professions |
 | **Approach** | Reasoning instructions (assumptions, self-review…) |
 | **Examples** | Optional few-shot example |
 | **Output Format** | Format, tone, length |
@@ -71,23 +95,26 @@ All content is data-driven. Edit the JSON files and refresh the page; no restart
   {
     "id": "senior-product-manager",
     "title": "Senior Product Manager",
+    "profession": "software",
     "category": "Product",
     "icon": "📈",
     "description": "Short description shown on the card.",
     "persona": "You are a Senior Product Manager with…",
     "expertise": ["…"],
     "focusAreas": ["…"],
-    "principles": ["…"]
+    "principles": ["…"],
+    "patternGroups": ["architecture", "styles"]
   }
   ```
-  New categories show up automatically as filter chips.
-- **Add options:** add entries to any list in `data/options.json` (`taskTypes`, `constraints`, `reasoning`, `outputFormats`, `audiences`, `tones`, `lengths`, `techStack` groups). Each `instruction` is the exact text inserted into the prompt.
+  New categories show up automatically as filter chips. `patternGroups` is optional and only applies to software roles.
+- **Add a profession:** append an entry to `professions` in `data/options.json` (labels, placeholders, `contextLead`, `defaultAudience`, `guardrails`). Then tag the options and context groups that belong to it with `"professions": ["<id>"]`. Untagged options are shared by all professions.
+- **Add options:** add entries to any list in `data/options.json` (`taskTypes`, `constraints`, `reasoning`, `outputFormats`, `audiences`, `tones`, `lengths`, `techStack` groups, `patterns` groups). Each `instruction` is the exact text inserted into the prompt.
 
 ## API
 
 ```bash
 curl -X POST localhost:3000/api/prompt -H 'Content-Type: application/json' \
-  -d '{"roleId":"senior-backend-developer","taskType":"api-design","description":"Design an orders API","style":"xml"}'
+  -d '{"profession":"software","roleIds":["senior-backend-developer"],"taskType":"api-design","description":"Design an orders API","patterns":["Repository","API-first / contract-first"],"style":"xml"}'
 ```
 
 The response has the shape `{ prompt, tokens, score, tips }`. `GET /api/roles` and `GET /api/options` return the raw data.

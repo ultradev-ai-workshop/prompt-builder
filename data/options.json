@@ -1,5 +1,131 @@
 {
   "version": 1,
+  "professions": [
+    {
+      "id": "software",
+      "label": "Software Professional",
+      "icon": "💻",
+      "description": "Developers, architects, DevOps, data, QA, security, design and product roles.",
+      "contextTitle": "Tech stack & focus",
+      "contextHint": "Ground the answer in your environment and priorities.",
+      "contextLead": "Tech stack / environment:",
+      "customContextLabel": "Other technologies",
+      "customContextPlaceholder": "e.g. Prisma, BullMQ, Vite",
+      "descriptionPlaceholder": "e.g. Build a REST endpoint that lets users upload a CSV of orders, validates each row, and stores valid orders in PostgreSQL. Invalid rows should be returned with line numbers and reasons.",
+      "contextPlaceholder": "Existing system, business domain, current state, relevant code or error messages…",
+      "defaultAudience": "self",
+      "guardrails": [],
+      "constraintsPlaceholder": "Must run on Node 20\nResponse time under 200 ms at p95",
+      "successPlaceholder": "Handles files up to 50 MB\nAll validation errors are reported, not just the first"
+    },
+    {
+      "id": "finance",
+      "label": "Financial Advisor",
+      "icon": "💰",
+      "description": "Financial planning, investing, tax, retirement, insurance and budgeting.",
+      "contextTitle": "Financial context",
+      "contextHint": "Region, instruments, goals, risk profile and time horizon.",
+      "contextLead": "Financial context:",
+      "customContextLabel": "Other details",
+      "customContextPlaceholder": "e.g. ₹1.2L monthly income, home loan EMI ₹35k, 2 dependants",
+      "descriptionPlaceholder": "e.g. I am 34, earn ₹18L a year, have ₹6L in savings and a ₹25k monthly SIP. I want to retire by 55 and fund my daughter’s education in 12 years. Build a plan.",
+      "contextPlaceholder": "Age, income, expenses, existing investments and loans, dependants, tax bracket…",
+      "defaultAudience": "fin-self",
+      "guardrails": [
+        "Provide educational guidance, not personalised regulated investment, tax or legal advice; say when a licensed professional should be consulted.",
+        "Never guarantee returns; state that past performance does not predict future results and quantify risk where you can.",
+        "Apply the rules of the person’s jurisdiction and flag any tax or regulatory rule that may have changed recently.",
+        "Do not invent product names, interest rates or figures; label every estimate and assumption."
+      ],
+      "constraintsPlaceholder": "Monthly investment must stay under ₹30,000\nNo exposure to crypto",
+      "successPlaceholder": "Shows the monthly SIP needed for each goal\nEvery projection states its return and inflation assumptions"
+    },
+    {
+      "id": "ayurveda",
+      "label": "Ayurveda Expert",
+      "icon": "🌿",
+      "description": "Prakriti assessment, diet, daily and seasonal routines, herbs, Panchakarma and yoga.",
+      "contextTitle": "Constitution & lifestyle",
+      "contextHint": "Dosha, season, diet, life stage and preferred modalities.",
+      "contextLead": "Constitution & lifestyle:",
+      "customContextLabel": "Other details",
+      "customContextPlaceholder": "e.g. desk job, sleeps at 1 am, lives in a humid climate",
+      "descriptionPlaceholder": "e.g. I often feel bloated after meals, sleep poorly and feel anxious in the evenings. I think I am Vata-dominant. Suggest a diet and daily routine.",
+      "contextPlaceholder": "Age, symptoms and how long, current medication, sleep, digestion, climate, daily schedule…",
+      "defaultAudience": "ayur-self",
+      "guardrails": [
+        "Complement, never replace, medical diagnosis or treatment; never advise stopping prescribed medication.",
+        "List red-flag symptoms that need prompt medical attention.",
+        "Flag contraindications and possible herb–drug interactions; take extra care with pregnancy, breastfeeding, children, older adults and chronic conditions.",
+        "Distinguish classical Ayurvedic principles from what modern clinical evidence supports.",
+        "Recommend consulting a qualified Ayurvedic practitioner before starting herbal formulations or Panchakarma."
+      ],
+      "constraintsPlaceholder": "No dairy (lactose intolerant)\nRoutine must fit a 9-to-6 office job",
+      "successPlaceholder": "Meals use ingredients from an Indian kitchen\nEach herb lists who should avoid it"
+    },
+    {
+      "id": "life-coach",
+      "label": "Life Coach",
+      "icon": "🌱",
+      "description": "Goals, career, habits, relationships, leadership and wellbeing coaching.",
+      "contextTitle": "Coaching context",
+      "contextHint": "Life areas, frameworks and coaching style.",
+      "contextLead": "Coaching context:",
+      "customContextLabel": "Other details",
+      "customContextPlaceholder": "e.g. new parent, 50-hour work weeks, values: freedom, family",
+      "descriptionPlaceholder": "e.g. I have been a software engineer for 8 years and feel stuck. I am considering moving into product management but worry about the pay cut. Help me decide and plan.",
+      "contextPlaceholder": "Current situation, what you have tried, what matters most to you, constraints…",
+      "defaultAudience": "coach-self",
+      "guardrails": [
+        "Coaching is not therapy: if there are signs of a mental-health crisis, self-harm risk or abuse, respond with care and point to professional or emergency support.",
+        "Respect the person’s autonomy: help them reach their own decisions rather than imposing choices.",
+        "Do not give medical, legal or financial advice; refer to the relevant professional."
+      ],
+      "constraintsPlaceholder": "Only 30 minutes a day available\nMust not involve quitting my job right now",
+      "successPlaceholder": "Ends with 3 concrete actions for this week\nI can explain my decision to my family afterwards"
+    },
+    {
+      "id": "fitness",
+      "label": "Fitness & Nutrition",
+      "icon": "🏋️",
+      "description": "Training programmes, nutrition plans, technique and mobility.",
+      "contextTitle": "Goals & resources",
+      "contextHint": "Goal, equipment and dietary preferences.",
+      "contextLead": "Goals & resources:",
+      "customContextLabel": "Other details",
+      "customContextPlaceholder": "e.g. 3 sessions a week, 45 minutes, old knee injury",
+      "descriptionPlaceholder": "e.g. I am 29, 78 kg, 175 cm, and can train 4 days a week at home with dumbbells. I want to lose fat and get stronger. Build a 12-week plan.",
+      "contextPlaceholder": "Age, height, weight, training history, injuries, schedule, current diet…",
+      "defaultAudience": "fit-beginner",
+      "guardrails": [
+        "Recommend medical clearance before starting for anyone with heart, joint or other health conditions, pregnancy or a recent injury.",
+        "Tell the person to stop and seek help if they feel pain, dizziness or chest discomfort.",
+        "Avoid extreme calorie deficits and unsafe supplements; do not diagnose injuries."
+      ],
+      "constraintsPlaceholder": "No jumping (knee issue)\nSessions under 45 minutes",
+      "successPlaceholder": "Weekly progression is clear\nEvery exercise has a home alternative"
+    },
+    {
+      "id": "business",
+      "label": "Business & Marketing",
+      "icon": "📈",
+      "description": "Strategy, go-to-market, marketing, content, sales and pricing.",
+      "contextTitle": "Business context",
+      "contextHint": "Business model, stage, channels and frameworks.",
+      "contextLead": "Business context:",
+      "customContextLabel": "Other details",
+      "customContextPlaceholder": "e.g. ₹5L monthly marketing budget, 2-person team",
+      "descriptionPlaceholder": "e.g. We sell a B2B invoicing tool for small Indian manufacturers. 40 paying customers, mostly via referrals. Plan how to reach 500 customers in 12 months.",
+      "contextPlaceholder": "Product, customers, competitors, current traction, budget, team…",
+      "defaultAudience": "biz-founder",
+      "guardrails": [
+        "Do not fabricate statistics, market sizes or case studies; label estimates and say how to validate them.",
+        "Keep marketing honest and compliant with advertising, consumer-protection and privacy rules (consent, GDPR, no dark patterns)."
+      ],
+      "constraintsPlaceholder": "Budget under ₹2L per month\nNo cold calling",
+      "successPlaceholder": "Every initiative has a KPI and owner\nPlan fits a 2-person team"
+    }
+  ],
   "taskTypes": [
     {
       "id": "implement",
@@ -14,6 +140,9 @@
         "Where it fits in the existing code",
         "Edge cases",
         "Out of scope"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -28,6 +157,9 @@
         "Areas of concern",
         "Standards to review against",
         "Severity levels you care about"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -44,6 +176,9 @@
         "Environment & versions",
         "What you have already tried",
         "Relevant code"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -58,6 +193,9 @@
         "Goals of the refactor",
         "Behaviour that must not change",
         "Constraints (public API, performance)"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -73,6 +211,9 @@
         "Non-functional requirements (latency, availability)",
         "Existing systems to integrate with",
         "Constraints (budget, team, deadlines)"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -88,6 +229,9 @@
         "Auth model",
         "Versioning & compatibility needs",
         "Pagination, filtering, error format"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -103,6 +247,9 @@
         "Profiling data or query plans",
         "Relevant code / queries",
         "Constraints"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -117,6 +264,9 @@
         "Test level (unit / integration / E2E)",
         "Key scenarios & edge cases",
         "What to mock"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -131,6 +281,9 @@
         "Type of doc (README, guide, reference)",
         "Key points to cover",
         "Existing material to build on"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -144,6 +297,9 @@
         "Your current understanding",
         "Why you need it",
         "Depth wanted"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -160,6 +316,9 @@
         "Dependencies & consumers",
         "Rollback requirements",
         "Timeline"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -176,6 +335,9 @@
         "Platform & breakpoints",
         "Brand / design system",
         "States to cover (empty, loading, error)"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -190,6 +352,643 @@
         "Evaluation criteria",
         "Constraints (team skills, budget, cloud)",
         "Decision deadline"
+      ],
+      "professions": [
+        "software"
+      ]
+    },
+    {
+      "id": "fin-plan",
+      "label": "Financial plan",
+      "icon": "🗺️",
+      "instruction": "Build a goal-based financial plan: cash flow, emergency fund, protection, investments per goal and a review schedule.",
+      "placeholder": "e.g. 34, ₹18L income, ₹6L savings. Goals: retire at 55, daughter’s education in 12 years, buy a home in 5 years. Build a plan.",
+      "checklist": [
+        "Age & dependants",
+        "Income & expenses",
+        "Assets & liabilities",
+        "Goals with amounts and dates",
+        "Risk tolerance",
+        "Existing insurance"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "portfolio-review",
+      "label": "Portfolio review",
+      "icon": "📊",
+      "instruction": "Review the portfolio for allocation, diversification, overlap, cost, risk and fit with the goals, then propose specific changes in priority order.",
+      "placeholder": "Paste your holdings (fund/stock, amount, since when) and say what the money is for.",
+      "checklist": [
+        "Holdings with amounts",
+        "Goals & horizon",
+        "Risk tolerance",
+        "Costs / expense ratios",
+        "Tax situation",
+        "What worries you"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-compare",
+      "label": "Compare investments",
+      "icon": "⚖️",
+      "instruction": "Compare the investment options on return potential, risk, liquidity, cost, tax treatment and suitability, then recommend one for this situation.",
+      "placeholder": "e.g. Compare PPF, ELSS and NPS for ₹1.5L a year of tax-saving investment for a 30-year-old in the new vs old tax regime.",
+      "checklist": [
+        "Options to compare",
+        "Amount & horizon",
+        "Goal",
+        "Tax bracket / regime",
+        "Liquidity needs"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "tax-plan",
+      "label": "Tax planning",
+      "icon": "🧾",
+      "instruction": "Identify legal ways to reduce tax for this situation, quantify the saving of each, and note deadlines and documentation.",
+      "placeholder": "e.g. Salaried, ₹24L CTC with HRA, home loan interest ₹2.1L, some capital gains from equity funds this year. Old or new regime, and how to save more?",
+      "checklist": [
+        "Income sources",
+        "Jurisdiction & tax year",
+        "Deductions already used",
+        "Capital gains",
+        "Deadlines"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "retirement",
+      "label": "Retirement plan",
+      "icon": "🏖️",
+      "instruction": "Estimate the retirement corpus needed, the gap to current savings, the monthly investment required and a withdrawal strategy, stating all assumptions.",
+      "placeholder": "e.g. 40 years old, ₹80k monthly expenses today, ₹45L invested, want to retire at 58. How much do I need and how do I get there?",
+      "checklist": [
+        "Current age & retirement age",
+        "Current monthly expenses",
+        "Savings & pension",
+        "Expected inflation & returns",
+        "Life expectancy assumption",
+        "Other income in retirement"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "budget-debt",
+      "label": "Budget & debt plan",
+      "icon": "💳",
+      "instruction": "Create a realistic monthly budget and a debt repayment plan (avalanche or snowball) with a timeline to become debt-free.",
+      "placeholder": "e.g. Take-home ₹95k. Credit card debt ₹2.4L at 36%, car loan ₹4L at 9%. Expenses are ~₹70k. Help me budget and clear debt.",
+      "checklist": [
+        "Take-home income",
+        "Fixed & variable expenses",
+        "Debts with rates and EMIs",
+        "Savings goal",
+        "Spending problem areas"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "insurance",
+      "label": "Insurance needs",
+      "icon": "🛡️",
+      "instruction": "Assess life, health and other insurance needs, recommend cover amounts and policy types, and point out gaps or over-insurance.",
+      "placeholder": "e.g. Married, one child, ₹20L income, home loan ₹40L outstanding, employer health cover ₹5L. What insurance do I need?",
+      "checklist": [
+        "Family & dependants",
+        "Income",
+        "Liabilities",
+        "Existing policies",
+        "Health conditions"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-explain",
+      "label": "Explain a concept",
+      "icon": "💡",
+      "instruction": "Explain the financial concept clearly, from fundamentals to practical use, with a worked numeric example.",
+      "placeholder": "e.g. Explain XIRR vs CAGR and when each is the right measure for my SIP returns.",
+      "checklist": [
+        "Concept",
+        "Your current understanding",
+        "Why you need it"
+      ],
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "prakriti",
+      "label": "Prakriti / dosha assessment",
+      "icon": "🧬",
+      "instruction": "Assess the likely Prakriti (constitution) and current Vikriti (imbalance) from the details given, explain the reasoning, and list the questions that would confirm it.",
+      "placeholder": "Describe your body frame, skin, digestion, sleep, energy, temperament, and what aggravates you (cold, heat, heavy food…).",
+      "checklist": [
+        "Body frame & weight tendency",
+        "Skin & hair",
+        "Digestion & appetite",
+        "Sleep",
+        "Energy & temperament",
+        "Current complaints"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-diet",
+      "label": "Diet & meal plan",
+      "icon": "🍲",
+      "instruction": "Design an Ayurvedic diet (Ahara) for this constitution and season: foods to favour and reduce, meal timing, and a sample day of meals.",
+      "placeholder": "e.g. Pitta-dominant, acidity and irritability in summer, vegetarian, works long hours. Create a diet plan.",
+      "checklist": [
+        "Dosha / constitution",
+        "Current complaints",
+        "Diet preference & allergies",
+        "Season & climate",
+        "Daily schedule"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "dinacharya",
+      "label": "Daily & seasonal routine",
+      "icon": "🌅",
+      "instruction": "Create a Dinacharya (daily routine) and Ritucharya (seasonal adjustments) suited to the constitution and lifestyle, with practical timings.",
+      "placeholder": "e.g. I wake at 8, work 10–7 at a desk, eat dinner at 10 pm and sleep at 1 am. Help me build a balanced routine for the coming winter.",
+      "checklist": [
+        "Current schedule",
+        "Work & commitments",
+        "Dosha / constitution",
+        "Season",
+        "What you are willing to change"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "condition-support",
+      "label": "Support for a health concern",
+      "icon": "🩺",
+      "instruction": "Explain the concern from an Ayurvedic perspective (dosha, Agni, Ama), then give diet, lifestyle, yoga and herbal support, clearly marking what needs medical evaluation.",
+      "placeholder": "e.g. Recurring migraines for 2 years, worse in summer and with skipped meals. On sumatriptan as needed. What can Ayurveda offer alongside?",
+      "checklist": [
+        "Symptoms & duration",
+        "Diagnosis (if any)",
+        "Current medication",
+        "Triggers",
+        "Age & life stage",
+        "What you have tried"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "herbal",
+      "label": "Herbs & home remedies",
+      "icon": "🌱",
+      "instruction": "Recommend suitable herbs or kitchen remedies with preparation, dosage range, timing (Anupana), duration and contraindications.",
+      "placeholder": "e.g. What herbs or home remedies can help with mild seasonal cough and congestion for an adult? I take blood-pressure medication.",
+      "checklist": [
+        "Concern",
+        "Age",
+        "Medication",
+        "Pregnancy / breastfeeding",
+        "Allergies"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "detox",
+      "label": "Detox / Panchakarma plan",
+      "icon": "♨️",
+      "instruction": "Outline a safe home-based seasonal cleanse or explain which Panchakarma therapies suit this person, with preparation (Purvakarma), main procedure and recovery (Paschatkarma).",
+      "placeholder": "e.g. I feel heavy and sluggish after the winter. Is a spring Kapha cleanse right for me, and what would it involve?",
+      "checklist": [
+        "Goal of the cleanse",
+        "Constitution & current symptoms",
+        "Health conditions & medication",
+        "Time available",
+        "Home or clinic"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "yoga-plan",
+      "label": "Yoga & pranayama routine",
+      "icon": "🧘",
+      "instruction": "Design a yoga, pranayama and meditation routine suited to the dosha and goal, with sequence, durations and modifications.",
+      "placeholder": "e.g. 20-minute morning routine to calm Vata anxiety and improve sleep, beginner, mild lower-back stiffness.",
+      "checklist": [
+        "Goal",
+        "Time available",
+        "Experience level",
+        "Physical limitations",
+        "Dosha / constitution"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-explain",
+      "label": "Explain a concept",
+      "icon": "💡",
+      "instruction": "Explain the Ayurvedic concept clearly, with its classical basis, practical meaning and everyday examples.",
+      "placeholder": "e.g. Explain Agni and Ama, and how to tell if my digestion is balanced.",
+      "checklist": [
+        "Concept",
+        "Your current understanding",
+        "Why you need it"
+      ],
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "goal-plan",
+      "label": "Goal setting & action plan",
+      "icon": "🎯",
+      "instruction": "Help clarify the goal, turn it into SMART goals with milestones, identify obstacles and resources, and agree concrete next steps.",
+      "placeholder": "e.g. I want to run my own design studio within 2 years but I keep postponing it. Help me set clear goals and a plan.",
+      "checklist": [
+        "The goal in your words",
+        "Why it matters to you",
+        "Where you are now",
+        "Obstacles",
+        "Resources & support",
+        "Deadline"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "career",
+      "label": "Career transition",
+      "icon": "🧭",
+      "instruction": "Explore the career change: motivations, transferable strengths, options, risks and a step-by-step transition plan with experiments to test it.",
+      "placeholder": "e.g. 8 years as a software engineer, considering product management. Worried about the pay cut and starting over.",
+      "checklist": [
+        "Current role & experience",
+        "What you want to change",
+        "Options considered",
+        "Constraints (money, location, family)",
+        "Strengths & skills",
+        "Timeline"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "habits",
+      "label": "Build or break a habit",
+      "icon": "🔁",
+      "instruction": "Design a habit plan using behaviour-science techniques (cues, tiny habits, environment design, tracking) and plan for relapses.",
+      "placeholder": "e.g. I want to exercise every morning and stop scrolling my phone in bed. I have tried several times and give up after a week.",
+      "checklist": [
+        "Habit to build or break",
+        "Previous attempts",
+        "Daily routine",
+        "Triggers",
+        "Motivation"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "decision",
+      "label": "Make a decision",
+      "icon": "🔀",
+      "instruction": "Guide the decision: clarify values and criteria, explore options and consequences, surface fears and assumptions, and help reach a choice.",
+      "placeholder": "e.g. Should I accept a promotion that requires relocating to another city with my family?",
+      "checklist": [
+        "The decision",
+        "Options",
+        "What matters most",
+        "Fears & concerns",
+        "Deadline",
+        "Who else is affected"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "limiting-belief",
+      "label": "Overcome a block",
+      "icon": "🧱",
+      "instruction": "Identify the limiting belief or block, examine the evidence for and against it, reframe it, and design small experiments to build confidence.",
+      "placeholder": "e.g. I never apply for leadership roles because I feel I am not good enough, even though my manager encourages me.",
+      "checklist": [
+        "The block",
+        "When it shows up",
+        "What you tell yourself",
+        "Impact on your life",
+        "Times you overcame it"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "balance",
+      "label": "Work-life balance",
+      "icon": "⚖️",
+      "instruction": "Assess the current balance across life areas, find the biggest drains and gains, and create a sustainable plan with boundaries.",
+      "placeholder": "e.g. I work 55 hours a week, rarely see friends, and feel guilty whenever I rest. I want more balance without hurting my career.",
+      "checklist": [
+        "Current weekly schedule",
+        "Life areas that suffer",
+        "Non-negotiables",
+        "Energy drains",
+        "What balance looks like to you"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "session",
+      "label": "Design a coaching session",
+      "icon": "🗓️",
+      "instruction": "Design a coaching session or programme: objectives, structure, powerful questions, exercises, and follow-up.",
+      "placeholder": "e.g. A 60-minute first session with a mid-level manager who wants to improve delegation.",
+      "checklist": [
+        "Client & situation",
+        "Session goal",
+        "Duration",
+        "Format (1:1, group)",
+        "Tools or frameworks to use"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "reflection",
+      "label": "Reflection & journaling",
+      "icon": "📓",
+      "instruction": "Create a set of reflection or journaling prompts, sequenced to deepen self-awareness and lead to action.",
+      "placeholder": "e.g. A 30-day journaling series to discover what I really want from the next 5 years.",
+      "checklist": [
+        "Theme",
+        "Duration",
+        "Time per day",
+        "What you hope to learn"
+      ],
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "workout-plan",
+      "label": "Training programme",
+      "icon": "🏋️",
+      "instruction": "Design a periodised training programme with weekly structure, exercises, sets, reps, progression and deload weeks.",
+      "placeholder": "e.g. 4 days a week at home with dumbbells up to 20 kg, goal fat loss + strength, 12 weeks.",
+      "checklist": [
+        "Goal",
+        "Experience level",
+        "Days & minutes per week",
+        "Equipment",
+        "Injuries or limitations",
+        "Programme length"
+      ],
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "nutrition-plan",
+      "label": "Nutrition plan",
+      "icon": "🥗",
+      "instruction": "Estimate calorie and macronutrient targets and build a practical meal plan with portions, timing and substitutions.",
+      "placeholder": "e.g. 29, 78 kg, 175 cm, moderately active, vegetarian, goal fat loss while keeping muscle.",
+      "checklist": [
+        "Age, height, weight",
+        "Activity level",
+        "Goal",
+        "Dietary preferences & allergies",
+        "Meals per day",
+        "Budget & cooking time"
+      ],
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "technique",
+      "label": "Exercise technique",
+      "icon": "🎯",
+      "instruction": "Explain correct technique, common faults and how to fix them, cues, and safer variations.",
+      "placeholder": "e.g. How do I deadlift with correct form? I feel it in my lower back rather than my glutes.",
+      "checklist": [
+        "Exercise",
+        "What you feel / see",
+        "Experience level",
+        "Equipment",
+        "Injuries"
+      ],
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "mobility",
+      "label": "Mobility & recovery",
+      "icon": "🤸",
+      "instruction": "Create a mobility, stretching and recovery routine targeting the problem areas, with progressions.",
+      "placeholder": "e.g. Tight hips and hamstrings from sitting 9 hours a day; 15 minutes a day available.",
+      "checklist": [
+        "Problem areas",
+        "Daily posture & activity",
+        "Time available",
+        "Pain or injuries"
+      ],
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-explain",
+      "label": "Explain a concept",
+      "icon": "💡",
+      "instruction": "Explain the training or nutrition concept clearly, with the evidence behind it and practical examples.",
+      "placeholder": "e.g. Explain progressive overload and how to apply it with only bodyweight exercises.",
+      "checklist": [
+        "Concept",
+        "Your current understanding",
+        "Why you need it"
+      ],
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "strategy",
+      "label": "Business strategy",
+      "icon": "♟️",
+      "instruction": "Analyse the situation and produce a business strategy: where to play, how to win, priorities, risks and metrics.",
+      "placeholder": "e.g. B2B invoicing tool for small manufacturers, 40 customers mostly from referrals. How do we reach 500 customers in 12 months?",
+      "checklist": [
+        "Product / service",
+        "Target customers",
+        "Current traction",
+        "Competitors",
+        "Goals & timeline",
+        "Budget & team"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "gtm",
+      "label": "Go-to-market plan",
+      "icon": "🚀",
+      "instruction": "Create a go-to-market plan: ideal customer profile, positioning, channels, launch phases, budget split and success metrics.",
+      "placeholder": "e.g. Launching a premium Ayurvedic skincare brand online in India with a ₹10L launch budget.",
+      "checklist": [
+        "Product",
+        "Ideal customer",
+        "Positioning & differentiators",
+        "Channels available",
+        "Budget",
+        "Launch date"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "campaign",
+      "label": "Marketing campaign",
+      "icon": "📣",
+      "instruction": "Plan a marketing campaign: objective, audience, message, creative concepts, channels, timeline, budget and KPIs.",
+      "placeholder": "e.g. Diwali campaign for our D2C tea brand to grow repeat purchases by 20%.",
+      "checklist": [
+        "Objective",
+        "Audience",
+        "Offer / key message",
+        "Channels",
+        "Budget",
+        "Timeline"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "content-plan",
+      "label": "Content calendar",
+      "icon": "🗓️",
+      "instruction": "Build a content strategy and calendar: pillars, formats, topics, publishing cadence and how each piece drives the goal.",
+      "placeholder": "e.g. 3-month LinkedIn and blog calendar to build authority for a cybersecurity consultancy.",
+      "checklist": [
+        "Goal",
+        "Audience",
+        "Platforms",
+        "Content pillars",
+        "Cadence & resources"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "copy",
+      "label": "Write copy",
+      "icon": "✍️",
+      "instruction": "Write persuasive, on-brand copy for the specified asset, with variations to test.",
+      "placeholder": "e.g. Landing page hero, three benefit blocks and a CTA for a habit-tracking app for students.",
+      "checklist": [
+        "Asset (ad, landing page, email…)",
+        "Audience",
+        "Key benefit & proof",
+        "Brand voice",
+        "Call to action",
+        "Length limits"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "market-research",
+      "label": "Market & competitor analysis",
+      "icon": "🔎",
+      "instruction": "Analyse the market and competitors: segments, size estimates, needs, competitor strengths and weaknesses, and opportunities.",
+      "placeholder": "e.g. Analyse the market for online yoga classes for corporate employees in India.",
+      "checklist": [
+        "Market / category",
+        "Geography",
+        "Known competitors",
+        "Questions to answer"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "pitch",
+      "label": "Pitch / investor deck",
+      "icon": "🎤",
+      "instruction": "Outline a compelling pitch: problem, solution, market, traction, business model, competition, team and the ask.",
+      "placeholder": "e.g. Seed-round pitch for an AI tutoring app, ₹3 Cr raise, 2,000 paying users.",
+      "checklist": [
+        "Audience (investors, customers)",
+        "Problem & solution",
+        "Traction",
+        "Business model",
+        "The ask"
+      ],
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "pricing",
+      "label": "Pricing strategy",
+      "icon": "🏷️",
+      "instruction": "Recommend a pricing model, tiers and price points, with the rationale, expected impact and how to test them.",
+      "placeholder": "e.g. Pricing for a SaaS scheduling tool for clinics, currently ₹999/month flat.",
+      "checklist": [
+        "Product & value delivered",
+        "Customer segments",
+        "Competitor prices",
+        "Costs",
+        "Current pricing & conversion"
+      ],
+      "professions": [
+        "business"
       ]
     }
   ],
@@ -209,6 +1008,9 @@
         "PHP",
         "Ruby",
         "SQL"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -221,6 +1023,9 @@
         "Svelte",
         "Tailwind CSS",
         "HTML/CSS"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -234,6 +1039,9 @@
         "FastAPI",
         ".NET",
         "Gin"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -247,6 +1055,9 @@
         "Kafka",
         "DynamoDB",
         "Snowflake"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -259,6 +1070,9 @@
         "Kubernetes",
         "Terraform",
         "GitHub Actions"
+      ],
+      "professions": [
+        "software"
       ]
     },
     {
@@ -268,6 +1082,298 @@
         "Material Design",
         "Apple HIG",
         "Design tokens"
+      ],
+      "professions": [
+        "software"
+      ]
+    },
+    {
+      "group": "Region & regulation",
+      "professions": [
+        "finance"
+      ],
+      "items": [
+        "India (SEBI / RBI)",
+        "United States",
+        "United Kingdom",
+        "European Union",
+        "UAE",
+        "Singapore",
+        "Canada",
+        "Australia"
+      ]
+    },
+    {
+      "group": "Instruments",
+      "professions": [
+        "finance"
+      ],
+      "items": [
+        "Stocks",
+        "Mutual funds",
+        "Index funds / ETFs",
+        "Bonds / debt funds",
+        "Fixed deposits",
+        "PPF / EPF",
+        "NPS",
+        "Gold / SGB",
+        "Real estate / REITs",
+        "Crypto",
+        "Insurance"
+      ]
+    },
+    {
+      "group": "Goals",
+      "professions": [
+        "finance"
+      ],
+      "items": [
+        "Retirement",
+        "Child education",
+        "Home purchase",
+        "Emergency fund",
+        "Wealth creation",
+        "Debt payoff",
+        "Financial independence"
+      ]
+    },
+    {
+      "group": "Risk & horizon",
+      "professions": [
+        "finance"
+      ],
+      "items": [
+        "Conservative",
+        "Moderate",
+        "Aggressive",
+        "Short term (< 3 yrs)",
+        "Medium term (3–7 yrs)",
+        "Long term (7+ yrs)"
+      ]
+    },
+    {
+      "group": "Dosha / Prakriti",
+      "professions": [
+        "ayurveda"
+      ],
+      "items": [
+        "Vata",
+        "Pitta",
+        "Kapha",
+        "Vata-Pitta",
+        "Pitta-Kapha",
+        "Vata-Kapha",
+        "Tridoshic",
+        "Not sure"
+      ]
+    },
+    {
+      "group": "Season (Ritu)",
+      "professions": [
+        "ayurveda"
+      ],
+      "items": [
+        "Spring (Vasanta)",
+        "Summer (Grishma)",
+        "Monsoon (Varsha)",
+        "Autumn (Sharad)",
+        "Early winter (Hemanta)",
+        "Late winter (Shishira)"
+      ]
+    },
+    {
+      "group": "Diet",
+      "professions": [
+        "ayurveda"
+      ],
+      "items": [
+        "Vegetarian",
+        "Vegan",
+        "Non-vegetarian",
+        "Jain",
+        "Gluten-free",
+        "Lactose-free"
+      ]
+    },
+    {
+      "group": "Life stage",
+      "professions": [
+        "ayurveda"
+      ],
+      "items": [
+        "Child",
+        "Adult",
+        "Pregnancy / postpartum",
+        "Menopause",
+        "Older adult"
+      ]
+    },
+    {
+      "group": "Modalities",
+      "professions": [
+        "ayurveda"
+      ],
+      "items": [
+        "Diet (Ahara)",
+        "Lifestyle (Vihara)",
+        "Herbs (Aushadhi)",
+        "Yoga asana",
+        "Pranayama",
+        "Meditation",
+        "Abhyanga",
+        "Panchakarma"
+      ]
+    },
+    {
+      "group": "Life areas",
+      "professions": [
+        "life-coach"
+      ],
+      "items": [
+        "Career",
+        "Relationships",
+        "Health",
+        "Finances",
+        "Personal growth",
+        "Purpose & meaning",
+        "Family",
+        "Fun & recreation"
+      ]
+    },
+    {
+      "group": "Frameworks",
+      "professions": [
+        "life-coach"
+      ],
+      "items": [
+        "GROW model",
+        "SMART goals",
+        "Wheel of Life",
+        "Ikigai",
+        "OKRs",
+        "Atomic Habits",
+        "CBT-informed reframing",
+        "Values clarification",
+        "Eisenhower matrix",
+        "Stoic practices"
+      ]
+    },
+    {
+      "group": "Coaching style",
+      "professions": [
+        "life-coach"
+      ],
+      "items": [
+        "Solution-focused",
+        "Socratic / non-directive",
+        "Directive",
+        "Strengths-based",
+        "Motivational interviewing"
+      ]
+    },
+    {
+      "group": "Goal",
+      "professions": [
+        "fitness"
+      ],
+      "items": [
+        "Fat loss",
+        "Muscle gain",
+        "Strength",
+        "Endurance",
+        "Mobility",
+        "General health",
+        "Sport performance"
+      ]
+    },
+    {
+      "group": "Equipment",
+      "professions": [
+        "fitness"
+      ],
+      "items": [
+        "No equipment",
+        "Dumbbells",
+        "Kettlebells",
+        "Resistance bands",
+        "Full gym",
+        "Yoga mat"
+      ]
+    },
+    {
+      "group": "Diet",
+      "professions": [
+        "fitness"
+      ],
+      "items": [
+        "Vegetarian",
+        "Vegan",
+        "Non-vegetarian",
+        "High-protein",
+        "Intermittent fasting",
+        "Keto"
+      ]
+    },
+    {
+      "group": "Business model",
+      "professions": [
+        "business"
+      ],
+      "items": [
+        "B2B",
+        "B2C",
+        "SaaS",
+        "E-commerce / D2C",
+        "Marketplace",
+        "Services / agency",
+        "Non-profit"
+      ]
+    },
+    {
+      "group": "Stage",
+      "professions": [
+        "business"
+      ],
+      "items": [
+        "Idea",
+        "Pre-revenue",
+        "Early traction",
+        "Growth",
+        "Mature"
+      ]
+    },
+    {
+      "group": "Channels",
+      "professions": [
+        "business"
+      ],
+      "items": [
+        "SEO",
+        "Content marketing",
+        "Social media",
+        "Paid ads",
+        "Email",
+        "LinkedIn",
+        "YouTube",
+        "Influencers",
+        "Partnerships",
+        "Events"
+      ]
+    },
+    {
+      "group": "Frameworks",
+      "professions": [
+        "business"
+      ],
+      "items": [
+        "SWOT",
+        "Porter’s Five Forces",
+        "Jobs-to-be-Done",
+        "Lean Canvas",
+        "AARRR funnel",
+        "North Star metric",
+        "AIDA",
+        "Blue Ocean"
       ]
     }
   ],
@@ -275,62 +1381,394 @@
     {
       "id": "production",
       "label": "Production-ready",
-      "instruction": "The solution must be production-ready, not a toy example."
+      "instruction": "The solution must be production-ready, not a toy example.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "errors",
       "label": "Robust error handling",
-      "instruction": "Handle errors and edge cases explicitly; never swallow errors silently."
+      "instruction": "Handle errors and edge cases explicitly; never swallow errors silently.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "tests",
       "label": "Include tests",
-      "instruction": "Include automated tests that cover the main behaviour and key edge cases."
+      "instruction": "Include automated tests that cover the main behaviour and key edge cases.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "security",
       "label": "Security best practices",
-      "instruction": "Follow security best practices (input validation, least privilege, no secrets in code, OWASP guidance)."
+      "instruction": "Follow security best practices (input validation, least privilege, no secrets in code, OWASP guidance).",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "performance",
       "label": "Performance-aware",
-      "instruction": "Consider performance and scalability; call out time/space complexity where relevant."
+      "instruction": "Consider performance and scalability; call out time/space complexity where relevant.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "solid",
       "label": "Clean code / SOLID",
-      "instruction": "Follow clean code and SOLID principles with clear naming and small, focused units."
+      "instruction": "Follow clean code and SOLID principles with clear naming and small, focused units.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "a11y",
       "label": "Accessibility (WCAG AA)",
-      "instruction": "Meet WCAG 2.2 AA accessibility requirements (contrast, keyboard access, semantics, focus states)."
+      "instruction": "Meet WCAG 2.2 AA accessibility requirements (contrast, keyboard access, semantics, focus states).",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "no-deps",
       "label": "Minimal dependencies",
-      "instruction": "Avoid introducing new third-party dependencies unless clearly justified."
+      "instruction": "Avoid introducing new third-party dependencies unless clearly justified.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "backcompat",
       "label": "Backward compatible",
-      "instruction": "Preserve backward compatibility with existing interfaces and data."
+      "instruction": "Preserve backward compatibility with existing interfaces and data.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "comments",
       "label": "Well commented",
-      "instruction": "Comment non-obvious logic and document public interfaces."
+      "instruction": "Comment non-obvious logic and document public interfaces.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "observability",
       "label": "Observability",
-      "instruction": "Include structured logging, metrics and tracing hooks where appropriate."
+      "instruction": "Include structured logging, metrics and tracing hooks where appropriate.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "cost",
       "label": "Cost-conscious",
-      "instruction": "Keep infrastructure and runtime cost in mind and call out cost implications."
+      "instruction": "Keep infrastructure and runtime cost in mind and call out cost implications.",
+      "professions": [
+        "software"
+      ]
+    },
+    {
+      "id": "fin-calc",
+      "label": "Show calculations",
+      "instruction": "Show the calculations behind every number, with the assumed return, inflation and tax rates.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-inflation",
+      "label": "Inflation-adjusted",
+      "instruction": "Express future amounts in both nominal and inflation-adjusted (today’s money) terms.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-tax",
+      "label": "Tax-efficient",
+      "instruction": "Prefer tax-efficient options and show the post-tax outcome.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-low-cost",
+      "label": "Low-cost / passive first",
+      "instruction": "Prefer low-cost, diversified, passive instruments unless there is a clear reason not to.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-liquidity",
+      "label": "Emergency fund & cover first",
+      "instruction": "Make sure the emergency fund and adequate insurance are in place before recommending investments.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-scenarios",
+      "label": "Best / base / worst case",
+      "instruction": "Show best-, base- and worst-case scenarios for projections.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-no-products",
+      "label": "No product pitching",
+      "instruction": "Recommend categories of instruments rather than specific branded products unless asked.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-regulatory",
+      "label": "Jurisdiction rules",
+      "instruction": "Apply the tax and regulatory rules of the stated country and name the rules you rely on.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "ayur-classical",
+      "label": "Cite classical texts",
+      "instruction": "Reference the classical sources (Charaka Samhita, Sushruta Samhita, Ashtanga Hridayam) where relevant.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-evidence",
+      "label": "Note modern evidence",
+      "instruction": "Note where modern research supports, contradicts or has not studied a recommendation.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-safety",
+      "label": "Safety & contraindications",
+      "instruction": "State contraindications, herb–drug interactions and who should avoid each recommendation.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-home",
+      "label": "Kitchen-friendly",
+      "instruction": "Prefer remedies and foods that are easily available in a home kitchen.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-seasonal",
+      "label": "Season-aware",
+      "instruction": "Adapt recommendations to the current season (Ritucharya) and climate.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-sanskrit",
+      "label": "Explain Sanskrit terms",
+      "instruction": "Explain every Sanskrit term in plain English the first time it appears.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-integrative",
+      "label": "Integrative with modern care",
+      "instruction": "Position recommendations as complementary to modern medical care.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-gradual",
+      "label": "Gradual changes",
+      "instruction": "Introduce changes gradually, starting with the few that matter most.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "coach-questions",
+      "label": "Coach with questions",
+      "instruction": "Coach mainly through powerful open questions rather than telling the person what to do.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-smart",
+      "label": "SMART goals",
+      "instruction": "Express goals as SMART goals (specific, measurable, achievable, relevant, time-bound).",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-next-step",
+      "label": "Tiny first step",
+      "instruction": "End with one small first step the person can take within 24 hours.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-accountability",
+      "label": "Accountability plan",
+      "instruction": "Include an accountability plan: how progress is tracked, reviewed and celebrated.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-strengths",
+      "label": "Strengths-based",
+      "instruction": "Build on the person’s existing strengths and past successes.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-empathy",
+      "label": "Empathetic & non-judgmental",
+      "instruction": "Acknowledge feelings and stay non-judgmental throughout.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-evidence",
+      "label": "Evidence-informed",
+      "instruction": "Ground techniques in evidence (positive psychology, behaviour science, CBT-informed methods) and name them.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "fit-progression",
+      "label": "Progressive overload",
+      "instruction": "Build in clear progressive overload and deload weeks.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-equipment",
+      "label": "Use only my equipment",
+      "instruction": "Use only the equipment listed; give alternatives for anything else.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-time",
+      "label": "Time-boxed sessions",
+      "instruction": "Keep each session within the stated time, including warm-up and cool-down.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-warmup",
+      "label": "Warm-up & cool-down",
+      "instruction": "Include a warm-up and cool-down for every session.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-macros",
+      "label": "Calories & macros",
+      "instruction": "Give calorie and macronutrient targets and show how they were calculated.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-evidence",
+      "label": "Evidence-based",
+      "instruction": "Base recommendations on current sports-science evidence and avoid fads.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-modifications",
+      "label": "Injury-safe modifications",
+      "instruction": "Give easier and joint-friendly modifications for each exercise.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "biz-data",
+      "label": "Data-backed",
+      "instruction": "Back recommendations with data or clearly labelled assumptions, and say how to validate them.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-kpis",
+      "label": "Measurable KPIs",
+      "instruction": "Define measurable KPIs and targets for every initiative.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-budget",
+      "label": "Budget-conscious",
+      "instruction": "Stay within the stated budget and show how it is allocated.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-brand",
+      "label": "On-brand voice",
+      "instruction": "Match the brand voice and positioning described.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-customer",
+      "label": "Customer-centric",
+      "instruction": "Start from customer needs and pains, not product features.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-quick-wins",
+      "label": "Quick wins + long term",
+      "instruction": "Separate quick wins (next 30 days) from longer-term initiatives.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-ethical",
+      "label": "Ethical & compliant",
+      "instruction": "Keep claims truthful and follow advertising, consumer-protection and privacy rules.",
+      "professions": [
+        "business"
+      ]
     }
   ],
   "reasoning": [
@@ -363,6 +1801,25 @@
       "id": "risks",
       "label": "Highlight risks",
       "instruction": "Highlight risks, pitfalls and anything that needs human verification."
+    },
+    {
+      "id": "recommend-patterns",
+      "label": "Recommend patterns",
+      "instruction": "Recommend the design patterns and architectural style that best fit this problem, justify each choice, and name patterns you deliberately avoided and why.",
+      "professions": [
+        "software"
+      ]
+    },
+    {
+      "id": "personal-details",
+      "label": "Ask for missing personal details",
+      "instruction": "Recommendations depend on the person’s situation: if important personal details are missing, list what you assumed and what would change the advice.",
+      "professions": [
+        "finance",
+        "ayurveda",
+        "life-coach",
+        "fitness"
+      ]
     }
   ],
   "outputFormats": [
@@ -372,9 +1829,17 @@
       "instruction": "Respond in well-structured Markdown with clear headings, bullet points and fenced code blocks."
     },
     {
+      "id": "exec-summary",
+      "label": "Summary first",
+      "instruction": "Start with a 3–5 bullet summary of the key recommendations, then give the details."
+    },
+    {
       "id": "code-first",
       "label": "Code first, brief notes",
-      "instruction": "Lead with complete, runnable code in fenced blocks, followed by brief explanatory notes."
+      "instruction": "Lead with complete, runnable code in fenced blocks, followed by brief explanatory notes.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "step-by-step",
@@ -389,12 +1854,18 @@
     {
       "id": "adr",
       "label": "Architecture Decision Record",
-      "instruction": "Respond as an ADR with sections: Title, Status, Context, Decision, Alternatives Considered, Consequences."
+      "instruction": "Respond as an ADR with sections: Title, Status, Context, Decision, Alternatives Considered, Consequences.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "mermaid",
       "label": "Include diagrams (Mermaid)",
-      "instruction": "Include Mermaid diagrams (in ```mermaid blocks) to illustrate architecture or flows."
+      "instruction": "Include Mermaid diagrams (in ```mermaid blocks) to illustrate architecture or flows.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "json",
@@ -405,28 +1876,328 @@
       "id": "checklist",
       "label": "Checklist",
       "instruction": "Respond as an actionable checklist grouped by category."
+    },
+    {
+      "id": "action-plan",
+      "label": "Action plan",
+      "instruction": "Include an action plan table with columns: action, why, when, and how progress is measured.",
+      "professions": [
+        "finance",
+        "life-coach",
+        "business"
+      ]
+    },
+    {
+      "id": "weekly-plan",
+      "label": "Week-by-week plan",
+      "instruction": "Lay out the plan week by week, showing what changes each week.",
+      "professions": [
+        "ayurveda",
+        "life-coach",
+        "fitness",
+        "business"
+      ]
+    },
+    {
+      "id": "daily-schedule",
+      "label": "Daily schedule",
+      "instruction": "Include a daily schedule with times (for example 6:00 wake up, 6:15 …).",
+      "professions": [
+        "ayurveda",
+        "life-coach",
+        "fitness"
+      ]
+    },
+    {
+      "id": "meal-plan",
+      "label": "Meal plan table",
+      "instruction": "Include a meal plan table by time of day with portions and simple substitutions.",
+      "professions": [
+        "ayurveda",
+        "fitness"
+      ]
+    },
+    {
+      "id": "projection",
+      "label": "Projection table",
+      "instruction": "Include a year-by-year projection table (contributions, growth, inflation-adjusted value) with the assumptions stated above it.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "allocation",
+      "label": "Allocation table",
+      "instruction": "Show the recommended asset allocation as a table with percentages and the rationale for each asset class.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "worksheet",
+      "label": "Worksheet",
+      "instruction": "Include a short worksheet: reflection questions with space to answer and a closing commitment statement.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "workout-table",
+      "label": "Workout tables",
+      "instruction": "Present each workout as a table: exercise, sets, reps or time, rest, and form notes.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "slide-outline",
+      "label": "Slide outline",
+      "instruction": "Respond as a slide-by-slide outline: slide title, key message and supporting points.",
+      "professions": [
+        "business"
+      ]
     }
   ],
   "audiences": [
     {
       "id": "self",
       "label": "Me (experienced engineer)",
-      "instruction": "The reader is an experienced engineer: skip basics and be precise."
+      "instruction": "The reader is an experienced engineer: skip basics and be precise.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "junior",
       "label": "Junior developer",
-      "instruction": "The reader is a junior developer: explain the reasoning and define jargon."
+      "instruction": "The reader is a junior developer: explain the reasoning and define jargon.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "team",
       "label": "Engineering team",
-      "instruction": "The reader is an engineering team: be precise and actionable."
+      "instruction": "The reader is an engineering team: be precise and actionable.",
+      "professions": [
+        "software"
+      ]
     },
     {
       "id": "stakeholders",
       "label": "Non-technical stakeholders",
-      "instruction": "The reader is non-technical: avoid jargon and focus on impact, cost and risk."
+      "instruction": "The reader is non-technical: avoid jargon and focus on impact, cost and risk.",
+      "professions": [
+        "software"
+      ]
+    },
+    {
+      "id": "fin-self",
+      "label": "Me (individual investor)",
+      "instruction": "The reader is an individual investor managing their own money: be practical and explain trade-offs.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-beginner",
+      "label": "Beginner, no finance background",
+      "instruction": "The reader is new to personal finance: define every term and use simple numeric examples.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-family",
+      "label": "Family / couple",
+      "instruction": "The readers are a family planning together: address shared goals and each person’s role.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-hni",
+      "label": "High-net-worth individual",
+      "instruction": "The reader is a high-net-worth individual: cover tax efficiency, estate planning and advanced instruments.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-business-owner",
+      "label": "Small business owner",
+      "instruction": "The reader owns a small business: separate business and personal finances and cover cash-flow risk.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "fin-pro",
+      "label": "Fellow advisor",
+      "instruction": "The reader is a finance professional: be technical and precise.",
+      "professions": [
+        "finance"
+      ]
+    },
+    {
+      "id": "ayur-self",
+      "label": "Me (general wellbeing)",
+      "instruction": "The reader wants to improve their own wellbeing: be practical and easy to follow.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-beginner",
+      "label": "New to Ayurveda",
+      "instruction": "The reader is new to Ayurveda: introduce concepts gently and avoid unexplained jargon.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-parent",
+      "label": "Parent (for a child)",
+      "instruction": "The reader is a parent asking about a child: use child-appropriate guidance and doses, and be extra cautious.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-senior",
+      "label": "Older adult",
+      "instruction": "The reader is an older adult: consider medications, mobility and gentler practices.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "ayur-practitioner",
+      "label": "Practitioner / student",
+      "instruction": "The reader is an Ayurveda practitioner or student: use classical terminology and cite sources.",
+      "professions": [
+        "ayurveda"
+      ]
+    },
+    {
+      "id": "coach-self",
+      "label": "Me (the coachee)",
+      "instruction": "The reader is the person being coached: speak to them directly.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-professional",
+      "label": "Working professional",
+      "instruction": "The reader is a busy working professional: keep exercises short and practical.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-student",
+      "label": "Student / young adult",
+      "instruction": "The reader is a student or young adult: relate examples to studies and early career.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-team",
+      "label": "Team / group",
+      "instruction": "The audience is a team or group: include group exercises and shared commitments.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "coach-coach",
+      "label": "A coach preparing a session",
+      "instruction": "The reader is a coach preparing a session: include facilitator notes and timing.",
+      "professions": [
+        "life-coach"
+      ]
+    },
+    {
+      "id": "fit-beginner",
+      "label": "Beginner",
+      "instruction": "The reader is a beginner: explain exercises simply and start conservatively.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-intermediate",
+      "label": "Intermediate",
+      "instruction": "The reader trains regularly: use standard training terminology.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-athlete",
+      "label": "Athlete",
+      "instruction": "The reader is an athlete: be specific about periodisation and performance metrics.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-senior",
+      "label": "Older adult",
+      "instruction": "The reader is an older adult: prioritise balance, joint health and safety.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "fit-trainer",
+      "label": "Trainer designing for a client",
+      "instruction": "The reader is a trainer: include coaching cues and progression rules.",
+      "professions": [
+        "fitness"
+      ]
+    },
+    {
+      "id": "biz-founder",
+      "label": "Founder / small team",
+      "instruction": "The reader is a founder with a small team: prioritise ruthlessly and keep it executable.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-team",
+      "label": "Marketing / sales team",
+      "instruction": "The readers are a marketing or sales team: be specific and actionable.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-exec",
+      "label": "Executives / board",
+      "instruction": "The readers are executives: lead with impact, numbers and decisions needed.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-investors",
+      "label": "Investors",
+      "instruction": "The readers are investors: emphasise market, traction, economics and risks.",
+      "professions": [
+        "business"
+      ]
+    },
+    {
+      "id": "biz-customers",
+      "label": "Customers",
+      "instruction": "The output is customer-facing: write in the brand voice for the end customer.",
+      "professions": [
+        "business"
+      ]
     }
   ],
   "tones": [
@@ -444,6 +2215,11 @@
       "id": "mentor",
       "label": "Mentoring",
       "instruction": "Use a supportive, teaching tone and explain the why behind each recommendation."
+    },
+    {
+      "id": "empathetic",
+      "label": "Empathetic",
+      "instruction": "Use a warm, empathetic and encouraging tone."
     },
     {
       "id": "formal",
@@ -488,6 +2264,573 @@
       "id": "plain",
       "label": "Plain text",
       "hint": "Compact, for chat boxes"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "creational",
+      "group": "Creational (GoF)",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Factory Method",
+          "hint": "Let subclasses or functions decide which class to instantiate"
+        },
+        {
+          "label": "Abstract Factory",
+          "hint": "Create families of related objects without naming concrete classes"
+        },
+        {
+          "label": "Builder",
+          "hint": "Construct complex objects step by step"
+        },
+        {
+          "label": "Singleton",
+          "hint": "One shared instance; use sparingly"
+        },
+        {
+          "label": "Prototype",
+          "hint": "Create objects by cloning an existing instance"
+        },
+        {
+          "label": "Dependency Injection",
+          "hint": "Pass dependencies in rather than creating them inside"
+        }
+      ]
+    },
+    {
+      "id": "structural",
+      "group": "Structural (GoF)",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Adapter",
+          "hint": "Make an incompatible interface fit the one you expect"
+        },
+        {
+          "label": "Decorator",
+          "hint": "Add behaviour by wrapping an object"
+        },
+        {
+          "label": "Facade",
+          "hint": "Simple interface over a complex subsystem"
+        },
+        {
+          "label": "Proxy",
+          "hint": "Stand-in that controls access (lazy loading, caching, auth)"
+        },
+        {
+          "label": "Composite",
+          "hint": "Treat individual objects and trees uniformly"
+        },
+        {
+          "label": "Bridge",
+          "hint": "Separate an abstraction from its implementation"
+        }
+      ]
+    },
+    {
+      "id": "behavioral",
+      "group": "Behavioural (GoF)",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Strategy",
+          "hint": "Swap interchangeable algorithms at runtime"
+        },
+        {
+          "label": "Observer",
+          "hint": "Notify subscribers when state changes"
+        },
+        {
+          "label": "Command",
+          "hint": "Encapsulate a request as an object (undo, queues)"
+        },
+        {
+          "label": "State machine",
+          "hint": "Behaviour changes with explicit states and transitions"
+        },
+        {
+          "label": "Chain of Responsibility",
+          "hint": "Pass a request along a chain of handlers (middleware)"
+        },
+        {
+          "label": "Template Method",
+          "hint": "Fixed algorithm skeleton with overridable steps"
+        },
+        {
+          "label": "Mediator",
+          "hint": "Centralise communication between components"
+        },
+        {
+          "label": "Visitor",
+          "hint": "Add operations to a structure without changing it"
+        }
+      ]
+    },
+    {
+      "id": "architecture",
+      "group": "Architecture styles",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Layered (N-tier)",
+          "hint": "Presentation, business and data layers"
+        },
+        {
+          "label": "Clean / Hexagonal (Ports & Adapters)",
+          "hint": "Domain at the centre, infrastructure at the edges"
+        },
+        {
+          "label": "Domain-Driven Design",
+          "hint": "Bounded contexts, aggregates, ubiquitous language"
+        },
+        {
+          "label": "Modular monolith",
+          "hint": "One deployable with strictly separated modules"
+        },
+        {
+          "label": "Microservices",
+          "hint": "Independently deployable services per business capability"
+        },
+        {
+          "label": "Event-driven",
+          "hint": "Components communicate through events"
+        },
+        {
+          "label": "CQRS",
+          "hint": "Separate models for reads and writes"
+        },
+        {
+          "label": "Event sourcing",
+          "hint": "Store state as an append-only log of events"
+        },
+        {
+          "label": "Serverless",
+          "hint": "Functions and managed services, no servers to run"
+        },
+        {
+          "label": "MVC",
+          "hint": "Model, view, controller"
+        },
+        {
+          "label": "MVVM",
+          "hint": "View binds to a view model that exposes state"
+        },
+        {
+          "label": "MVI / Unidirectional data flow",
+          "hint": "Intent → state → view, one direction"
+        },
+        {
+          "label": "Micro-frontends",
+          "hint": "Independently delivered frontend slices"
+        }
+      ]
+    },
+    {
+      "id": "backend",
+      "group": "Backend & distributed systems",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Repository",
+          "hint": "Collection-like access to persisted aggregates"
+        },
+        {
+          "label": "Unit of Work",
+          "hint": "Track changes and commit them in one transaction"
+        },
+        {
+          "label": "Service layer",
+          "hint": "Application use cases orchestrated in services"
+        },
+        {
+          "label": "API Gateway",
+          "hint": "Single entry point for routing, auth and rate limits"
+        },
+        {
+          "label": "Backend for Frontend (BFF)",
+          "hint": "A backend tailored to each client"
+        },
+        {
+          "label": "Saga",
+          "hint": "Distributed transaction via local steps and compensations"
+        },
+        {
+          "label": "Transactional Outbox",
+          "hint": "Reliably publish events with the DB write"
+        },
+        {
+          "label": "Circuit Breaker",
+          "hint": "Stop calling a failing dependency for a while"
+        },
+        {
+          "label": "Retry with exponential backoff",
+          "hint": "Retry transient failures with jitter"
+        },
+        {
+          "label": "Bulkhead",
+          "hint": "Isolate resources so one failure does not sink all"
+        },
+        {
+          "label": "Idempotency keys",
+          "hint": "Make retries safe for non-idempotent operations"
+        },
+        {
+          "label": "Rate limiting",
+          "hint": "Token bucket / sliding window limits"
+        },
+        {
+          "label": "Cache-aside",
+          "hint": "Load into cache on miss, invalidate on write"
+        },
+        {
+          "label": "Pub/Sub & message queues",
+          "hint": "Asynchronous decoupling through a broker"
+        },
+        {
+          "label": "Strangler Fig",
+          "hint": "Replace a legacy system incrementally"
+        }
+      ]
+    },
+    {
+      "id": "frontend",
+      "group": "Frontend & web",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Component composition",
+          "hint": "Build UIs from small, composable components"
+        },
+        {
+          "label": "Container / Presentational",
+          "hint": "Separate data fetching from rendering"
+        },
+        {
+          "label": "Custom hooks / composables",
+          "hint": "Reuse stateful logic across components"
+        },
+        {
+          "label": "Compound components",
+          "hint": "Related components sharing implicit state"
+        },
+        {
+          "label": "Atomic design",
+          "hint": "Atoms → molecules → organisms → templates → pages"
+        },
+        {
+          "label": "Flux / Redux store",
+          "hint": "Single store, actions and reducers"
+        },
+        {
+          "label": "Signals / fine-grained reactivity",
+          "hint": "Reactive primitives that update precisely"
+        },
+        {
+          "label": "Server-state caching (React Query / SWR)",
+          "hint": "Cache, dedupe and revalidate server data"
+        },
+        {
+          "label": "SSR / SSG / ISR",
+          "hint": "Choose rendering strategy per page"
+        },
+        {
+          "label": "Islands architecture",
+          "hint": "Static HTML with isolated interactive islands"
+        },
+        {
+          "label": "Optimistic UI",
+          "hint": "Update the UI before the server confirms"
+        },
+        {
+          "label": "Progressive Web App",
+          "hint": "Service worker, offline support, installable"
+        }
+      ]
+    },
+    {
+      "id": "mobile",
+      "group": "Mobile & desktop apps",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Offline-first with sync",
+          "hint": "Local database as source of truth, sync in background"
+        },
+        {
+          "label": "Coordinator / Router",
+          "hint": "Navigation logic outside the screens"
+        },
+        {
+          "label": "BLoC",
+          "hint": "Business logic components with streams (Flutter)"
+        },
+        {
+          "label": "Feature modules",
+          "hint": "Modularise by feature for build speed and ownership"
+        },
+        {
+          "label": "Background work scheduling",
+          "hint": "WorkManager / BGTaskScheduler for deferred work"
+        },
+        {
+          "label": "Plugin architecture",
+          "hint": "Extend the app through well-defined plugin interfaces"
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "group": "Data engineering",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "ETL / ELT",
+          "hint": "Transform before or after loading"
+        },
+        {
+          "label": "Medallion (bronze / silver / gold)",
+          "hint": "Layered refinement of raw data"
+        },
+        {
+          "label": "Change Data Capture",
+          "hint": "Stream changes from the source database"
+        },
+        {
+          "label": "Kappa / stream-first",
+          "hint": "One streaming pipeline for all processing"
+        },
+        {
+          "label": "Star schema",
+          "hint": "Fact tables with dimension tables"
+        },
+        {
+          "label": "Slowly Changing Dimensions",
+          "hint": "Track history of dimension attributes"
+        },
+        {
+          "label": "Data contracts",
+          "hint": "Versioned schema agreements between producers and consumers"
+        },
+        {
+          "label": "Data mesh",
+          "hint": "Domain-owned data products"
+        }
+      ]
+    },
+    {
+      "id": "cloud",
+      "group": "Cloud & delivery",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Twelve-Factor App",
+          "hint": "Config in env, stateless processes, disposability"
+        },
+        {
+          "label": "Infrastructure as Code",
+          "hint": "Terraform / Pulumi / CDK, reviewed like code"
+        },
+        {
+          "label": "GitOps",
+          "hint": "Git as the source of truth for deployments"
+        },
+        {
+          "label": "Blue-green deployment",
+          "hint": "Switch traffic between two identical environments"
+        },
+        {
+          "label": "Canary releases",
+          "hint": "Gradually shift traffic to the new version"
+        },
+        {
+          "label": "Feature flags",
+          "hint": "Decouple deploy from release"
+        },
+        {
+          "label": "Sidecar / service mesh",
+          "hint": "Cross-cutting concerns in a proxy next to the service"
+        },
+        {
+          "label": "Immutable infrastructure",
+          "hint": "Replace, never patch, servers"
+        }
+      ]
+    },
+    {
+      "id": "ai",
+      "group": "AI / LLM systems",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Retrieval-Augmented Generation",
+          "hint": "Ground answers in retrieved documents"
+        },
+        {
+          "label": "Agent with tool use",
+          "hint": "Model plans and calls tools in a loop"
+        },
+        {
+          "label": "Prompt chaining",
+          "hint": "Break the task into sequential LLM calls"
+        },
+        {
+          "label": "Routing",
+          "hint": "Classify input and send it to a specialised path"
+        },
+        {
+          "label": "Evaluator–optimiser loop",
+          "hint": "One call generates, another critiques"
+        },
+        {
+          "label": "Input / output guardrails",
+          "hint": "Validate and filter what goes in and out"
+        },
+        {
+          "label": "Semantic caching",
+          "hint": "Reuse answers for semantically similar queries"
+        }
+      ]
+    },
+    {
+      "id": "game",
+      "group": "Games & real-time",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Game loop",
+          "hint": "Fixed-timestep update and render loop"
+        },
+        {
+          "label": "Entity Component System",
+          "hint": "Data-oriented entities composed of components"
+        },
+        {
+          "label": "Object pool",
+          "hint": "Reuse objects to avoid allocation spikes"
+        },
+        {
+          "label": "Spatial partitioning",
+          "hint": "Quadtrees / grids for fast spatial queries"
+        },
+        {
+          "label": "Client-side prediction",
+          "hint": "Hide network latency in multiplayer"
+        }
+      ]
+    },
+    {
+      "id": "embedded",
+      "group": "Embedded & IoT",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Hierarchical state machine",
+          "hint": "Nested states for device behaviour"
+        },
+        {
+          "label": "Super-loop vs RTOS tasks",
+          "hint": "Choose the scheduling model deliberately"
+        },
+        {
+          "label": "ISR with deferred processing",
+          "hint": "Keep interrupts short, defer work"
+        },
+        {
+          "label": "Ring buffer",
+          "hint": "Lock-free fixed-size queue for streams"
+        },
+        {
+          "label": "Hardware Abstraction Layer",
+          "hint": "Isolate hardware specifics behind interfaces"
+        },
+        {
+          "label": "Watchdog & fail-safe defaults",
+          "hint": "Recover from hangs safely"
+        },
+        {
+          "label": "OTA updates with rollback",
+          "hint": "A/B partitions and signed images"
+        }
+      ]
+    },
+    {
+      "id": "styles",
+      "group": "Implementation style",
+      "professions": [
+        "software"
+      ],
+      "items": [
+        {
+          "label": "Test-Driven Development",
+          "hint": "Red → green → refactor"
+        },
+        {
+          "label": "Behaviour-Driven Development",
+          "hint": "Given / When / Then specifications"
+        },
+        {
+          "label": "Functional style",
+          "hint": "Pure functions, immutability, composition"
+        },
+        {
+          "label": "Object-oriented (SOLID)",
+          "hint": "Encapsulation and the SOLID principles"
+        },
+        {
+          "label": "Reactive streams",
+          "hint": "RxJS / Reactor / Flow for async data"
+        },
+        {
+          "label": "Async/await, structured concurrency",
+          "hint": "Clear async control flow with cancellation"
+        },
+        {
+          "label": "Type-driven design",
+          "hint": "Make illegal states unrepresentable"
+        },
+        {
+          "label": "Result types for errors",
+          "hint": "Return errors as values instead of throwing"
+        },
+        {
+          "label": "API-first / contract-first",
+          "hint": "OpenAPI / protobuf contract before code"
+        },
+        {
+          "label": "Defensive programming, fail fast",
+          "hint": "Validate early and fail loudly"
+        },
+        {
+          "label": "Trunk-based development",
+          "hint": "Small, frequent merges to main"
+        }
+      ]
     }
   ]
 }

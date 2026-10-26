@@ -184,6 +184,8 @@ select.input { cursor: pointer; }
 .segmented-full button { flex: 1; }
 
 /* ============ Roles ============ */
+.profession-chips .chip { padding: 8px 14px; font-weight: 600; }
+.profession-desc { margin: 8px 0 14px; font-size: 12.5px; color: var(--muted); }
 .role-toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
 .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
 .role-card {
@@ -217,6 +219,12 @@ select.input { cursor: pointer; }
 /* ============ Tech stack ============ */
 .stack-groups { display: flex; flex-direction: column; gap: 12px; }
 .stack-group h4 { margin: 0 0 6px; font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ============ Patterns & guardrails ============ */
+.label-row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.label-row .btn { flex: none; margin-bottom: 8px; }
+.guardrails { margin-top: 18px; padding: 12px 14px; background: var(--surface-2); border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+.guardrail-list { margin: 10px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
 
 .advanced { margin-top: 18px; }
 .advanced summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--accent-text); margin-bottom: 8px; }
@@ -400,6 +408,10 @@ kbd { font-family: var(--mono); font-size: 11px; opacity: 0.75; }
 .selected-role-info { display: flex; flex-direction: column; min-width: 0; }
 .selected-role-info strong { font-size: 13.5px; color: var(--text); }
 .selected-role-info span { font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.selected-role-info strong .badge {
+  margin-left: 8px; padding: 1px 6px; border-radius: 5px;
+  background: var(--accent-soft); color: var(--accent-text); font-size: 10.5px; font-weight: 600; white-space: nowrap;
+}
 .segmented-sm { padding: 2px; }
 .segmented-sm button { padding: 4px 9px; font-size: 12px; }
 .selected-roles .del { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 4px 8px; border-radius: 6px; }
